@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B4F6C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>تأجير الدراجات</title>
+<style>
+:root{--bg:#EDF0F2;--card:#fff;--ink:#14202B;--muted:#5E6B76;--line:#D8DEE3;--pri:#0B4F6C;--pri-ink:#fff;--ok:#1F7A4D;--okbg:#E3F3EA;--warn:#8A5A0B;--warnbg:#FBF0D9;--bad:#B3261E;--badbg:#FBE4E2;--soft:#F5F7F8}
+@media(prefers-color-scheme:dark){:root{--bg:#0E151B;--card:#16202A;--ink:#E8EEF2;--muted:#9AA8B3;--line:#27343F;--pri:#59B8DB;--pri-ink:#06222E;--ok:#5FD39A;--okbg:#12301F;--warn:#F0BE66;--warnbg:#33290F;--bad:#FF8A80;--badbg:#3A1714;--soft:#1B2732}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',Arial,sans-serif;font-size:15px;line-height:1.6}
+a{color:var(--pri)}
+.hd{position:sticky;top:0;z-index:6}
+.top{background:var(--pri);color:var(--pri-ink);padding:calc(10px + env(safe-area-inset-top)) 14px 10px;font-weight:700;font-size:1.05rem;display:flex;justify-content:space-between;align-items:center}
+.top small{font-weight:400;opacity:.85}
+main{max-width:900px;margin:auto;padding:14px 14px calc(30px + env(safe-area-inset-bottom))}
+.tabs{background:var(--card);border-bottom:1px solid var(--line);display:flex;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.tabs a{flex:1;text-align:center;padding:10px 4px;text-decoration:none;color:var(--muted);font-size:.8rem;font-weight:600}
+.tabs a b{display:block;font-size:1.25rem;line-height:1.2}
+.tabs a.on{color:var(--pri)}
+.tabs a.plus b{background:var(--pri);color:var(--pri-ink);border-radius:50%;width:34px;height:34px;line-height:34px;margin:0 auto;font-size:1.5rem}
+.tabs a.on{box-shadow:inset 0 -3px 0 var(--pri)}
+h1{font-size:1.3rem;margin:6px 0 12px}h2{font-size:1.05rem;margin:20px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:1.4rem;line-height:1.25;font-variant-numeric:tabular-nums}.stat span{color:var(--muted);font-size:.82rem}
+.stat.ok b{color:var(--ok)}.stat.warn b{color:var(--warn)}.stat.bad b{color:var(--bad)}
+.grid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:620px){.grid{grid-template-columns:repeat(2,1fr)}}
+.rt{margin:0;border-radius:16px;border-inline-start:6px solid var(--pri)}.rt.late{border-inline-start-color:var(--bad)}
+.rt .top2{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.who{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.92rem;margin-top:6px}
+.clock{font-size:2.1rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em;direction:ltr;text-align:right;margin:6px 0 2px}
+.rt.late .clock{color:var(--bad)}
+.sub{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.92rem;margin-bottom:10px}
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--soft);flex:none;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted);border:1px solid var(--line)}
+.avatar.bike{border-radius:10px;font-size:1.3rem}
+.avatar.lg{width:130px;height:130px;border-radius:14px;font-size:2.4rem}
+.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.8rem;font-weight:600;background:var(--soft);color:var(--muted)}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.warn{background:var(--warnbg);color:var(--warn)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.btn{display:inline-block;border:0;cursor:pointer;background:var(--pri);color:var(--pri-ink);padding:10px 18px;border-radius:10px;font:inherit;font-weight:600;text-decoration:none;text-align:center}
+.btn.sec{background:var(--soft);color:var(--ink);border:1px solid var(--line)}.btn.bad{background:var(--bad);color:#fff}
+.btn.sm{padding:5px 12px;font-size:.85rem}.btn.block{display:block;width:100%}.btn.big{padding:14px 18px;font-size:1.1rem}
+.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+label{display:block;font-weight:600;margin:10px 0 4px;font-size:.92rem}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+input[type=checkbox]{width:auto}
+.row{display:grid;gap:10px;grid-template-columns:1fr}@media(min-width:620px){.row.c2{grid-template-columns:1fr 1fr}.row.c3{grid-template-columns:repeat(3,1fr)}}
+.hint{color:var(--muted);font-size:.82rem;margin-top:3px}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--soft);font-size:.85rem;color:var(--muted)}tr:last-child td{border-bottom:0}
+.fl{padding:10px 14px;border-radius:10px;margin-bottom:12px;font-weight:600}.fl.ok{background:var(--okbg);color:var(--ok)}.fl.err{background:var(--badbg);color:var(--bad)}.fl.warn{background:var(--warnbg);color:var(--warn)}
+.filters{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:12px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.kv:last-child{border:0}.kv b{font-variant-numeric:tabular-nums}
+.big{font-size:1.5rem;font-weight:700}
+.empty{text-align:center;color:var(--muted);padding:22px 10px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.receipt{max-width:460px;margin:auto}
+.lock{max-width:340px;margin:18vh auto;text-align:center}
+.list a.item{display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid var(--line);background:var(--card);border-radius:12px;margin-bottom:8px;text-decoration:none;color:var(--ink);font-weight:600}
+.photorow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.prow{display:grid;grid-template-columns:2fr 1fr auto;gap:8px;margin-bottom:6px}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.sign{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px;text-align:center}.sign div{border-top:1px solid var(--ink);padding-top:6px;font-size:.9rem}
+.terms{font-size:.92rem;line-height:1.9}.contract h1{text-align:center}
+.top small .btn{padding:1px 10px;font-size:.78rem;margin-inline-start:6px}
+@media print{.top,.tabs,.noprint,.fl{display:none!important}body{background:#fff;color:#000}.card{border:0}main{padding:0}:root{--ink:#000;--muted:#333;--line:#999}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"><div class="lock card"><h1>جارٍ التحميل…</h1></div></div>
+<script>
+'use strict';
+/* ====================== التخزين (IndexedDB مع بديل localStorage) ====================== */
+const store = (() => {
+  let db = null, mode = 'idb';
+  const LSP = 'bikerent2_';
+  const open = () => new Promise(res => {
+    try {
+      const rq = indexedDB.open('bike_rental', 1);
+      rq.onupgradeneeded = () => rq.result.createObjectStore('kv');
+      rq.onsuccess = () => { db = rq.result; res(true); };
+      rq.onerror = rq.onblocked = () => res(false);
+    } catch (e) { res(false); }
+  });
+  return {
+    async init() { if (!(await open())) mode = 'ls'; return mode; },
+    get(k) {
+      if (mode === 'ls') { try { const v = localStorage.getItem(LSP + k); return Promise.resolve(v == null ? null : JSON.parse(v)); } catch (e) { return Promise.resolve(null); } }
+      return new Promise(res => { try { const rq = db.transaction('kv').objectStore('kv').get(k); rq.onsuccess = () => res(rq.result === undefined ? null : rq.result); rq.onerror = () => res(null); } catch (e) { res(null); } });
+    },
+    set(k, v) {
+      if (mode === 'ls') { try { localStorage.setItem(LSP + k, JSON.stringify(v)); return Promise.resolve(true); } catch (e) { return Promise.resolve(false); } }
+      return new Promise(res => { try { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); } catch (e) { res(false); } });
+    },
+  };
+})();
+
+/* ====================== النموذج والبيانات ====================== */
+const PLANS = {
+  q15: {label: 'ربع ساعة', unit: 15, qlabel: 'عدد أرباع الساعة (اختياري)'},
+  q30: {label: 'نصف ساعة', unit: 30, qlabel: 'عدد أنصاف الساعة (اختياري)'},
+  h60: {label: 'ساعة', unit: 60, qlabel: 'عدد الساعات (اختياري)'},
+  day: {label: 'يوم', unit: 1440, qlabel: 'عدد الأيام (اختياري)'},
+  week: {label: 'أسبوع', unit: 10080, qlabel: 'عدد الأسابيع (اختياري)'},
+  month: {label: 'اشتراك شهري', unit: 0, qlabel: 'عدد الأشهر (اتركه فارغاً لمدة مفتوحة)'},
+  flat: {label: 'سعر مقطوع', unit: 1440, qlabel: 'عدد الأيام المتفق عليها'},
+};
+const TERMS = "1) يقرّ المستأجر باستلام الدراجة سليمة وبالحالة الموضحة، ويلتزم بإعادتها بنفس الحالة.\n2) المستأجر مسؤول عن أي ضرر أو فقدان أو مخالفات مرورية أثناء مدة الإيجار.\n3) يُمنع تأجير الدراجة لشخص آخر أو استخدامها خارج النظام العام.\n4) التأخير عن موعد الإرجاع يُحتسب بسعر الإيجار المتفق عليه.\n5) يُسترد التأمين عند تسليم الدراجة سليمة، ويُخصم منه قيمة أي ضرر.";
+const DEF = {shop_name: 'محلات تأجير الدراجات', shop_phone: '', footer: 'شكراً لزيارتكم', default_rate: 300, grace: 0, round_to: 1,
+             late_pct: 0, early_mode: 'actual', auto_delete: false, opening_cash: 0, pin: '', last_backup: 0, contract_terms: TERMS, sync_url: '', sync_key: '', sync_auto: true, last_sync: 0, sync_err: ''};
+const emptyDB = () => ({v: 3, settings: {...DEF}, bikes: [], customers: [], rentals: [], cash: [], maint: [], types: [], users: [], log: [],
+                        seq: {bike: 0, cust: 0, rent: 0, cash: 0, maint: 0, type: 0, user: 0, log: 0}});
+function normalize(d) {
+  const b = emptyDB();
+  b.settings = {...DEF, ...(d.settings || {})};
+  if (b.settings.early_mode !== 'agreed') b.settings.early_mode = 'actual';
+  b.bikes = (d.bikes || []).map(x => ({id: x.id, name: x.name || x.model || '', type_id: +x.type_id || 0, size: x.size || '', serial: x.serial || x.plate || '',
+    buy_price: +x.buy_price || 0, sell_price: +x.sell_price || 0, rate: +x.rate || 0, rate15: +x.rate15 || 0, rate30: +x.rate30 || 0, rate_day: +x.rate_day || 0, rate_week: +x.rate_week || 0, month_price: +x.month_price || 0,
+    status: ['available', 'maintenance', 'sold'].includes(x.status) ? x.status : 'available', buy_date: x.buy_date || 0,
+    sold_at: x.sold_at || 0, sold_price: +x.sold_price || 0, sold_to: x.sold_to || '', notes: x.notes || ''}));
+  b.customers = (d.customers || []).map(c => ({id: c.id, name: c.name || '', phone: c.phone || '', address: c.address || '',
+    guarantor: c.guarantor || '', guarantor_phone: c.guarantor_phone || '', blocked: c.blocked ? 1 : 0, block_reason: c.block_reason || '', notes: ((c.idno ? 'هوية: ' + c.idno + ' ' : '') + (c.notes || '')).trim(), created: c.created || 0}));
+  b.rentals = (d.rentals || []).map(r => ({id: r.id, bike_id: r.bike_id, customer_id: r.customer_id,
+    plan: PLANS[r.plan] ? r.plan : 'h60', unit_min: r.unit_min !== undefined ? r.unit_min : 60,
+    price: +(r.price !== undefined ? r.price : r.rate) || 0, qty: +(r.qty !== undefined ? r.qty : Math.ceil((r.expected_min || 0) / 60)) || 0,
+    start: r.start, planned_end: r.planned_end !== undefined ? r.planned_end : (r.expected_min ? r.start + r.expected_min * 60000 : 0),
+    arrival: r.arrival !== undefined ? r.arrival : (r.end || null), delay_min: +r.delay_min || 0, delay_cost: +r.delay_cost || 0, base: +r.base || 0,
+    deposit: +r.deposit || 0, deposit_note: r.deposit_note || '', discount: +r.discount || 0, total: +r.total || 0, paid: +r.paid || 0,
+    refund: +r.refund || 0, status: r.status, notes: r.notes || '', by: r.by || ''}));
+  b.cash = Array.isArray(d.cash) ? d.cash : (d.payments || []).map((p, i) => ({id: i + 1, at: p.at, type: p.kind === 'debt' ? 'debt' : 'rental_pay', amount: +p.amount || 0, ref: p.rental_id, cat: '', note: ''}));
+  b.maint = (Array.isArray(d.maint) ? d.maint : []).map(m => ({...m, owner: m.owner || '', by: m.by || ''}));
+  b.cash.forEach(e => { if (e.type === 'maint') { const m = b.maint.find(x => x.id === e.ref); if (m && m.owner) { e.type = 'repair_rev'; e.amount = Math.abs(e.amount); } } });
+  b.types = (d.types || []).map(t => ({id: t.id, name: t.name || '', rate: +t.rate || 0, rate15: +t.rate15 || 0, rate30: +t.rate30 || 0, rate_day: +t.rate_day || 0, rate_week: +t.rate_week || 0, month_price: +t.month_price || 0, notes: t.notes || ''}));
+  b.users = (d.users || []).map(u => ({id: u.id, name: u.name || '', role: u.role === 'staff' ? 'staff' : 'admin', pin: u.pin || '', legacy: !!u.legacy, active: u.active !== false}));
+  b.log = Array.isArray(d.log) ? d.log.slice(-1000) : [];
+  b.seq = {...b.seq, ...(d.seq || {})};
+  const mx = a => Math.max(0, ...a.map(x => x.id || 0));
+  b.seq.bike = Math.max(b.seq.bike, mx(b.bikes)); b.seq.cust = Math.max(b.seq.cust, mx(b.customers));
+  b.seq.rent = Math.max(b.seq.rent, mx(b.rentals)); b.seq.cash = Math.max(b.seq.cash, mx(b.cash)); b.seq.maint = Math.max(b.seq.maint, mx(b.maint));
+  b.seq.type = Math.max(b.seq.type, mx(b.types)); b.seq.user = Math.max(b.seq.user, mx(b.users)); b.seq.log = Math.max(b.seq.log, mx(b.log));
+  if (!b.users.length && b.settings.pin) { b.users.push({id: ++b.seq.user, name: 'المدير', role: 'admin', pin: b.settings.pin, legacy: true, active: true}); }   // ترحيل القفل القديم
+  b.settings.pin = '';
+  return b;
+}
+let DB = emptyDB(), PHOTOS = {}, READY = false;
+let saving = false, dirty = false, LAST = '', warned = false;
+let unsynced = false;
+function save(quiet) { if (quiet !== true) unsynced = true; dirty = true; if (!saving) flush(); }
+async function flush() {
+  saving = true;
+  while (dirty) {
+    dirty = false;
+    const js = JSON.stringify(DB);
+    const ok = await store.set('db', js);
+    if (ok) { if (LAST) await store.set('db_prev', LAST); LAST = js; }
+    else if (!warned) { warned = true; alert('تعذر حفظ البيانات! قد تكون المساحة ممتلئة أو التخزين معطّل. نزّل نسخة احتياطية الآن من الإعدادات.'); }
+  }
+  saving = false;
+}
+const whenSaved = () => new Promise(r => { const t = () => (saving || dirty) ? setTimeout(t, 15) : r(true); t(); });
+async function savePhotos() { unsynced = true; if (!(await store.set('photos', PHOTOS)) && !warned) { warned = true; alert('تعذر حفظ الصور. المساحة قد تكون ممتلئة.'); } }
+const nid = k => ++DB.seq[k];
+const TMP = {};
+let FLASH = null;
+const flash = (t, m) => { FLASH = [t, m]; };
+
+/* ====================== أدوات ====================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const AR = '٠١٢٣٤٥٦٧٨٩';
+const numIn = s => { const t = String(s ?? '').replace(/[٠-٩]/g, d => AR.indexOf(d)).replace(/[٫،,]/g, '.'); const n = parseFloat(t.replace(/[^0-9.]/g, '')); return isNaN(n) ? 0 : n; };
+const fmt = n => { n = +n || 0; return (Math.abs(n - Math.round(n)) < 0.005 ? Math.round(n) : Math.round(n * 100) / 100).toLocaleString('en-US'); };
+const pad = n => String(n).padStart(2, '0');
+const dtf = ts => { if (!ts) return '—'; const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+const dayKey = ts => { const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+const dtLocal = ts => dayKey(ts) + 'T' + pad(new Date(ts).getHours()) + ':' + pad(new Date(ts).getMinutes());
+const parseLocal = v => v ? new Date(v).getTime() : NaN;
+const dateToTs = v => (!v || v === dayKey(Date.now())) ? Date.now() : new Date(v + 'T12:00:00').getTime();
+const dur = sec => { sec = Math.max(0, Math.floor(sec)); const d = Math.floor(sec / 86400), r = sec % 86400; return (d ? d + 'ي ' : '') + pad(Math.floor(r / 3600)) + ':' + pad(Math.floor(r % 3600 / 60)) + ':' + pad(r % 60); };
+const durMin = m => { m = Math.max(0, Math.round(m)); const d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mm = m % 60; return (d ? d + ' يوم ' : '') + (h ? h + ' ساعة ' : '') + (mm || (!d && !h) ? mm + ' دقيقة' : ''); };
+const sum = (a, f) => a.reduce((x, y) => x + (+f(y) || 0), 0);
+const CUR = 'ريال';
+const addMonths = (ts, n) => { const d = new Date(ts); d.setMonth(d.getMonth() + n); return d.getTime(); };
+const fail = m => { alert(m); };
+
+const bikeOf = id => DB.bikes.find(b => b.id === id);
+const custOf = id => DB.customers.find(c => c.id === id);
+const rentalOf = id => DB.rentals.find(r => r.id === id);
+const isRented = id => DB.rentals.some(r => r.status === 'active' && r.bike_id === id);
+const activeRentals = () => DB.rentals.filter(r => r.status === 'active').sort((a, b) => a.start - b.start);
+const cname = r => (TMP[r.id] && TMP[r.id].name) || (custOf(r.customer_id) && custOf(r.customer_id).name) || 'عميل محذوف';
+const balance = r => r.status !== 'finished' ? 0 : Math.max(0, r.total - Math.min(r.deposit, r.total) - r.paid);
+const bikeLabel = b => b ? (b.name + (b.serial ? ' · ' + b.serial : '')) : 'دراجة محذوفة';
+const planLabel = r => PLANS[r.plan].label;
+const openMaint = bid => DB.maint.some(m => m.bike_id === bid && m.status === 'open');
+const initial = s => (String(s || '?').trim()[0] || '?');
+const bikeAvatar = (b, lg) => (b && PHOTOS['b' + b.id]) ? '<img class="avatar bike' + (lg ? ' lg' : '') + '" src="' + PHOTOS['b' + b.id] + '" alt="">' : '<span class="avatar bike' + (lg ? ' lg' : '') + '">🏍</span>';
+/* سعر الدراجة لكل نظام أجرة (أسعار كل دراجة مستقلة؛ 15 و30 دقيقة تُحسب من سعر الساعة إن تُركت فارغة) */
+function priceFor(b, plan) {
+  const rate = b.rate || DB.settings.default_rate;
+  const day = b.rate_day || (b.month_price ? Math.round(b.month_price / 30) : 0);
+  return plan === 'q15' ? (b.rate15 || Math.round(rate / 4)) : plan === 'q30' ? (b.rate30 || Math.round(rate / 2)) : plan === 'h60' ? rate :
+    plan === 'day' ? day : plan === 'week' ? (b.rate_week || day * 7) : plan === 'month' ? (b.month_price || day * 30) : 0;
+}
+function planDesc(r) { return r.plan === 'flat' ? 'سعر مقطوع ' + fmt(r.price) + ' لمدة ' + r.qty + ' يوم' : PLANS[r.plan].label + ' · ' + fmt(r.price) + (r.qty ? ' × ' + r.qty : ''); }
+const avatar = (c, lg) => (c && PHOTOS[c.id]) ? '<img class="avatar' + (lg ? ' lg' : '') + '" src="' + PHOTOS[c.id] + '" alt="">' : '<span class="avatar' + (lg ? ' lg' : '') + '">' + esc(initial(c && c.name)) + '</span>';
+
+/* ====================== الصندوق (دفتر الحركات) ====================== */
+const CASH = {
+  adv: ['عربون / دفعة مقدمة', 1], rental_pay: ['دفعة إيجار', 1], debt: ['سداد دين', 1], refund: ['رد عربون', -1],
+  expense: ['مصروف', -1], maint: ['صيانة', -1], bike_buy: ['شراء دراجة', -1], bike_sale: ['بيع دراجة', 1],
+  repair_rev: ['إيراد إصلاح دراجة', 1], owner_in: ['إيداع من المالك', 1], owner_out: ['سحب المالك', -1],
+};
+function cashAdd(type, amount, ref, cat, note, at) {
+  amount = Math.abs(+amount || 0); if (!amount) return;
+  DB.cash.push({id: nid('cash'), at: at || Date.now(), type, amount: amount * CASH[type][1], ref: ref || 0, cat: cat || '', note: note || ''});
+}
+const cashBalance = () => (+DB.settings.opening_cash || 0) + sum(DB.cash, e => e.amount);
+
+/* ====================== حساب الإيجار ======================
+ * الوحدة (15/30/60 دقيقة) تُحسب كاملة إذا تجاوزت دقائق السماح. إن حُدّدت مدة متفق عليها:
+ *  - تأخير = الوقت الفعلي بعد المدة المتفقة، ويُحسب بوحدات كاملة × السعر × (1 + نسبة التأخير).
+ *  - إرجاع مبكر: الوقت الفعلي (الافتراضي) أو المدة المتفقة كاملة حسب الإعداد.
+ * الاشتراك الشهري: سعر ثابت لكل شهر، والتأخير يُحسب بالأيام (سعر الشهر ÷ 30 لليوم).
+ */
+function ceilGrace(mins, unit, grace) {
+  let f = Math.floor(mins / unit + 1e-9); const rem = mins - f * unit;
+  if (rem > 1e-9 && rem > grace) f++;
+  return f;
+}
+function calcRental(r, arr) {
+  const S = DB.settings, grace = Math.max(0, +S.grace || 0), late = +S.late_pct || 0, to = Math.max(1, +S.round_to || 1);
+  const elapsed = Math.max(0, (arr - r.start) / 60000);
+  let base = 0, delayMin = 0, delayCost = 0, units = 0;
+  if (r.plan === 'month') {
+    if (r.qty > 0) {
+      const months = r.qty; base = months * r.price; units = months;
+      const pe = r.planned_end || addMonths(r.start, months), d = Math.max(0, (arr - pe) / 60000);
+      if (d > grace) { delayMin = Math.floor(d); delayCost = Math.ceil(d / 1440 - 1e-9) * (r.price / 30) * (1 + late / 100); }
+    } else { /* اشتراك مفتوح: أشهر كاملة (30 يوماً) + الأيام الزائدة بسعر الشهر÷30، والحد الأدنى شهر */
+      let months = Math.floor(elapsed / 43200 + 1e-9); const rem = elapsed - months * 43200; let days = rem > grace ? Math.ceil(rem / 1440 - 1e-9) : 0;
+      if (months === 0) { months = 1; days = 0; }
+      base = months * r.price + days * (r.price / 30); units = months;
+    }
+  } else {
+    const u = r.unit_min || 60, actual = Math.max(1, ceilGrace(elapsed, u, grace)), flat = r.plan === 'flat';
+    const du = (r.plan === 'week' || flat) ? 1440 : u, dp = r.plan === 'week' ? r.price / 7 : flat ? r.price / Math.max(1, r.qty) : r.price;
+    if (r.qty > 0) {
+      const d = elapsed - r.qty * u;
+      if (d > grace) { delayMin = Math.floor(d); delayCost = Math.ceil(d / du - 1e-9) * dp * (1 + late / 100); base = flat ? r.price : r.qty * r.price; units = r.qty; }
+      else { units = S.early_mode === 'agreed' ? r.qty : Math.min(r.qty, actual); base = flat ? r.price : units * r.price; }
+    } else { units = actual; base = flat ? r.price : actual * r.price; }
+  }
+  base = Math.round(base); delayCost = Math.round(delayCost);
+  return {base, delayMin, delayCost, total: Math.round((base + delayCost) / to) * to, units, elapsed};
+}
+function plannedEnd(plan, start, qty) {
+  if (plan === 'month') return qty > 0 ? addMonths(start, qty) : 0;
+  return qty > 0 ? start + qty * PLANS[plan].unit * 60000 : 0;
+}
+
+/* ====================== الصور ====================== */
+let PEND = {mode: 'keep', data: null};
+function readPhoto(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const M = 480; let w = img.naturalWidth, h = img.naturalHeight; const s = Math.min(1, M / Math.max(w, h));
+      w = Math.max(1, Math.round(w * s)); h = Math.max(1, Math.round(h * s));
+      const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+function applyPhoto(cid) {
+  if (PEND.mode === 'set' && PEND.data) { PHOTOS[cid] = PEND.data; savePhotos(); }
+  else if (PEND.mode === 'remove' && PHOTOS[cid]) { delete PHOTOS[cid]; savePhotos(); }
+  PEND = {mode: 'keep', data: null};
+}
+
+/* ====================== العمليات ====================== */
+function startRental(f) {
+  const bike = bikeOf(+f.bike_id);
+  if (!bike || bike.status !== 'available' || isRented(bike.id)) return fail('الدراجة غير متاحة للتأجير');
+  const plan = PLANS[f.plan] ? f.plan : 'h60', price = numIn(f.price);
+  if (price <= 0) return fail('أدخل سعر الإيجار');
+  const start = f.start ? parseLocal(f.start) : Date.now();
+  if (isNaN(start) || start > Date.now() + 60000) return fail('وقت البداية غير صحيح أو في المستقبل');
+  let qty = Math.max(0, Math.round(numIn(f.qty))); if (plan === 'flat' && qty < 1) return fail('أدخل عدد الأيام للسعر المقطوع');
+  let cid = +f.customer_id || 0;
+  if (!cid) {
+    const name = (f.c_name || '').trim(); if (!name) return fail('اختر عميلاً أو أدخل اسم عميل جديد');
+    cid = nid('cust');
+    DB.customers.push({id: cid, name, phone: (f.c_phone || '').trim(), address: (f.c_address || '').trim(), guarantor: (f.c_guarantor || '').trim(),
+      guarantor_phone: (f.c_gphone || '').trim(), notes: '', created: Date.now()});
+    applyPhoto(cid);
+  }
+  const cuX = custOf(cid);
+  if (cuX && cuX.blocked) return fail('هذا العميل محظور' + (cuX.block_reason ? ': ' + cuX.block_reason : '') + '. يرفع المدير الحظر أولاً.');
+  const rid = nid('rent'), deposit = numIn(f.deposit);
+  DB.rentals.push({id: rid, bike_id: bike.id, customer_id: cid, plan, unit_min: PLANS[plan].unit, price, qty, start, planned_end: plannedEnd(plan, start, qty),
+    arrival: null, delay_min: 0, delay_cost: 0, base: 0, deposit, deposit_note: (f.deposit_note || '').trim(), discount: 0, total: 0, paid: 0, refund: 0,
+    status: 'active', notes: (f.notes || '').trim(), by: who()});
+  if (deposit > 0) cashAdd('adv', deposit, rid, '', 'عربون إيجار #' + rid, start > Date.now() - 36e5 ? Date.now() : start);
+  logAct('إيجار جديد', '#' + rid + ' — ' + bikeLabel(bike) + ' — ' + (custOf(cid) || {}).name + ' — ' + PLANS[plan].label + ' ' + fmt(price));
+  save(); flash('ok', 'بدأ الإيجار — العداد يعمل الآن'); go('dashboard');
+}
+
+function finishRental(id, f) {
+  const r = rentalOf(id);
+  if (!r || r.status !== 'active') { flash('err', 'هذا الإيجار منتهٍ أو غير موجود'); return go('dashboard'); }
+  const arr = f.arrival ? parseLocal(f.arrival) : Date.now();
+  if (isNaN(arr) || arr > Date.now() + 60000) return fail('وقت الوصول غير صحيح أو في المستقبل');
+  if (arr < r.start) return fail('وقت الوصول قبل وقت البداية');
+  const c = calcRental(r, arr), disc = Math.min(Math.max(0, numIn(f.discount)), c.total), total = c.total - disc;
+  const due = Math.max(0, total - Math.min(r.deposit, total)), raw = String(f.paid ?? '').trim();
+  const paid = raw === '' ? due : Math.min(Math.max(0, numIn(raw)), due), refund = Math.max(0, r.deposit - total), endNote = (f.end_notes || '').trim();
+  Object.assign(r, {arrival: arr, delay_min: c.delayMin, delay_cost: c.delayCost, base: c.base, discount: disc, total, paid, refund, status: 'finished',
+                    notes: (r.notes || '') + (endNote ? ' | ' + endNote : '')});
+  if (paid > 0) cashAdd('rental_pay', paid, r.id, '', 'إيجار #' + r.id);
+  if (refund > 0) cashAdd('refund', refund, r.id, '', 'رد عربون إيجار #' + r.id);
+  if (f.del_customer) {
+    const other = DB.rentals.some(x => x.customer_id === r.customer_id && x.status === 'active' && x.id !== r.id);
+    if (balance(r) > 0) flash('err', 'لم يُحذف العميل لأن عليه مبلغاً متبقياً');
+    else if (other) flash('err', 'لم يُحذف العميل لأن عنده إيجاراً آخر جارياً');
+    else { const cu = custOf(r.customer_id); if (cu) { TMP[r.id] = {name: cu.name, phone: cu.phone}; DB.customers = DB.customers.filter(x => x.id !== cu.id); delete PHOTOS[cu.id]; savePhotos(); flash('ok', 'تم حذف بيانات العميل'); } }
+  }
+  logAct('إنهاء إيجار', '#' + r.id + ' — الإجمالي ' + fmt(total) + ' — مدفوع ' + fmt(paid) + (balance(r) > 0 ? ' — متبقي ' + fmt(balance(r)) : ''));
+  save(); go('receipt/' + r.id);
+}
+
+function cancelRental(id) {
+  if (!needAdmin()) return;
+  const r = rentalOf(id); if (!r || r.status !== 'active') return go('dashboard');
+  r.status = 'cancelled'; r.arrival = Date.now();
+  if (r.deposit > 0) cashAdd('refund', r.deposit, r.id, '', 'إلغاء إيجار #' + r.id + ' ورد العربون');
+  logAct('إلغاء إيجار', '#' + r.id);
+  save(); flash('ok', 'تم إلغاء الإيجار'); go('dashboard');
+}
+
+function payDebt(id, amount) {
+  const r = rentalOf(id); if (!r || r.status !== 'finished') return go('dashboard');
+  const amt = Math.min(numIn(amount), balance(r));
+  if (amt > 0) { r.paid += amt; cashAdd('debt', amt, r.id, '', 'سداد إيجار #' + r.id); logAct('سداد دين', '#' + r.id + ' — ' + fmt(amt)); save(); flash('ok', 'تم تسجيل الدفعة'); }
+  go('receipt/' + id);
+}
+function payCustomerDebt(cid, amount) {
+  let left = numIn(amount); if (left <= 0) return fail('أدخل مبلغاً صحيحاً');
+  const debts = DB.rentals.filter(r => r.customer_id === cid && balance(r) > 0).sort((a, b) => a.id - b.id);
+  const total = sum(debts, balance); if (!total) return fail('لا يوجد دين على هذا العميل');
+  left = Math.min(left, total); const paidTotal = left;
+  for (const r of debts) { if (left <= 0) break; const p = Math.min(left, balance(r)); r.paid += p; cashAdd('debt', p, r.id, '', 'سداد إيجار #' + r.id); left -= p; }
+  logAct('سداد دين عميل', (custOf(cid) || {}).name + ' — ' + fmt(paidTotal));
+  save(); flash('ok', 'تم تسجيل دفعة ' + fmt(paidTotal) + ' ' + CUR); go('customer/' + cid);
+}
+
+function saveBike(f) {
+  if (!needAdmin()) return;
+  const name = (f.name || '').trim(), serial = (f.serial || '').trim();
+  if (!name) return fail('أدخل اسم الدراجة');
+  if (serial && DB.bikes.some(b => b.serial === serial && b.id !== +f.id)) return fail('الرقم التسلسلي مسجل مسبقاً');
+  const v = {name, type_id: +f.type_id || 0, size: (f.size || '').trim(), serial, buy_price: numIn(f.buy_price), sell_price: numIn(f.sell_price), rate: numIn(f.rate), rate15: numIn(f.rate15), rate30: numIn(f.rate30), rate_day: numIn(f.rate_day), rate_week: numIn(f.rate_week), month_price: numIn(f.month_price), notes: (f.notes || '').trim()};
+  const ty = DB.types.find(t => t.id === v.type_id);
+  if (ty && !v.rate) v.rate = ty.rate;
+  if (ty && !v.month_price) v.month_price = ty.month_price;
+  if (ty && !v.rate15) v.rate15 = ty.rate15;
+  if (ty && !v.rate30) v.rate30 = ty.rate30;
+  if (ty && !v.rate_day) v.rate_day = ty.rate_day;
+  if (ty && !v.rate_week) v.rate_week = ty.rate_week;
+  let bid = +f.id;
+  if (+f.id) {
+    const b = bikeOf(+f.id); Object.assign(b, v);
+    const e = DB.cash.find(x => x.type === 'bike_buy' && x.ref === b.id); if (e) e.amount = -Math.abs(v.buy_price);
+    flash('ok', 'تم حفظ التعديل');
+  } else {
+    const id = nid('bike'), at = dateToTs(f.buy_date); bid = id;
+    DB.bikes.push({id, ...v, status: 'available', buy_date: at, sold_at: 0, sold_price: 0, sold_to: ''});
+    if (!f.existing && v.buy_price > 0) cashAdd('bike_buy', v.buy_price, id, '', 'شراء ' + name, at);
+    flash('ok', f.existing ? 'تمت إضافة الدراجة' : 'تم تسجيل شراء الدراجة وخصم ثمنها من الصندوق');
+  }
+  applyPhoto('b' + bid);
+  logAct(+f.id ? 'تعديل دراجة' : 'شراء/إضافة دراجة', name + (serial ? ' ' + serial : '') + (v.buy_price ? ' — ' + fmt(v.buy_price) : ''));
+  save(); go('bikes');
+}
+function sellBike(id, f) {
+  if (!needAdmin()) return;
+  const b = bikeOf(id); if (!b || b.status === 'sold') return go('bikes');
+  if (isRented(b.id) || openMaint(b.id)) return fail('لا يمكن بيع دراجة مؤجرة أو في الصيانة');
+  const price = numIn(f.sold_price); if (price <= 0) return fail('أدخل سعر البيع');
+  const at = dateToTs(f.sold_date);
+  Object.assign(b, {status: 'sold', sold_price: price, sold_at: at, sold_to: (f.sold_to || '').trim()});
+  cashAdd('bike_sale', price, b.id, '', 'بيع ' + b.name + (b.sold_to ? ' إلى ' + b.sold_to : ''), at);
+  logAct('بيع دراجة', bikeLabel(b) + ' — ' + fmt(price) + (b.sold_to ? ' إلى ' + b.sold_to : ''));
+  save(); flash('ok', 'تم بيع الدراجة وإضافة المبلغ للصندوق'); go('bikes');
+}
+function undoSale(id) {
+  if (!needAdmin()) return;
+  const b = bikeOf(id); if (!b || b.status !== 'sold') return;
+  DB.cash = DB.cash.filter(e => !(e.type === 'bike_sale' && e.ref === b.id));
+  Object.assign(b, {status: 'available', sold_price: 0, sold_at: 0, sold_to: ''}); logAct('إلغاء بيع دراجة', bikeLabel(b)); save(); flash('ok', 'تم إلغاء البيع'); render();
+}
+function deleteBike(id) {
+  if (!needAdmin()) return;
+  if (DB.rentals.some(r => r.bike_id === id) || DB.maint.some(m => m.bike_id === id)) { flash('err', 'لا يمكن حذف دراجة لها إيجارات أو صيانة'); return render(); }
+  if (!confirm('حذف الدراجة؟ سيُحذف أيضاً قيد شراؤها من الصندوق.')) return;
+  logAct('حذف دراجة', bikeLabel(bikeOf(id)));
+  if (PHOTOS['b' + id]) { delete PHOTOS['b' + id]; savePhotos(); }
+  DB.bikes = DB.bikes.filter(b => b.id !== id); DB.cash = DB.cash.filter(e => !(e.type === 'bike_buy' && e.ref === id));
+  save(); flash('ok', 'تم حذف الدراجة'); render();
+}
+
+function saveMaint(f, el) {
+  const bike = bikeOf(+f.bike_id); if (!bike || bike.status === 'sold' || isRented(bike.id)) return fail('اختر دراجة غير مؤجرة');
+  const names = [...el.querySelectorAll('[name=part_name]')], costs = [...el.querySelectorAll('[name=part_cost]')];
+  const parts = names.map((n, i) => ({name: n.value.trim(), cost: numIn(costs[i].value)})).filter(p => p.name || p.cost > 0);
+  if (parts.some(p => !p.name)) return fail('اكتب اسم كل قطعة أو عملية');
+  const labor = numIn(f.labor), total = sum(parts, p => p.cost) + labor;
+  if (!parts.length && labor <= 0) return fail('أضف قطعة أو أجرة عمل واحدة على الأقل');
+  const id = nid('maint'), at = dateToTs(f.date), inShop = !!f.in_shop;
+  DB.maint.push({id, bike_id: bike.id, date: at, parts, labor, total, notes: (f.notes || '').trim(), owner: (f.owner || '').trim(), by: who(), status: inShop ? 'open' : 'done', done_at: inShop ? 0 : at});
+  if (inShop && bike.status === 'available') bike.status = 'maintenance';
+  cashAdd((f.owner || '').trim() ? 'repair_rev' : 'maint', total, id, '', ((f.owner || '').trim() ? 'إصلاح دراجة ' + (f.owner || '').trim() + ' — ' : 'صيانة ') + bike.name, at);
+  logAct('صيانة', bike.name + ' — ' + parts.map(p => p.name).join('، ') + ' — ' + fmt(total));
+  save(); flash('ok', inShop ? 'سُجّلت الصيانة والدراجة خارج الخدمة حتى تكتمل' : 'تم تسجيل الصيانة — هذه فاتورة الإصلاح'); go(inShop ? 'maint' : 'invoice/' + id);
+}
+function addPart(mid, f) {
+  const m = DB.maint.find(x => x.id === mid); if (!m) return;
+  const name = (f.name || '').trim(), cost = numIn(f.cost); if (!name || cost <= 0) return fail('أدخل اسم القطعة وتكلفتها');
+  m.parts.push({name, cost}); m.total += cost; cashAdd(m.owner ? 'repair_rev' : 'maint', cost, mid, '', name); logAct('قطعة صيانة', name + ' — ' + fmt(cost)); save(); flash('ok', 'تمت إضافة القطعة'); render();
+}
+function completeMaint(mid) {
+  const m = DB.maint.find(x => x.id === mid); if (!m || m.status !== 'open') return;
+  m.status = 'done'; m.done_at = Date.now(); logAct('اكتمال صيانة', bikeLabel(bikeOf(m.bike_id)));
+  const b = bikeOf(m.bike_id); if (b && b.status === 'maintenance' && !openMaint(b.id)) b.status = 'available';
+  save(); flash('ok', 'اكتملت الصيانة وعادت الدراجة للخدمة — هذه فاتورة الإصلاح'); go('invoice/' + mid);
+}
+function deleteMaint(mid) {
+  if (!needAdmin()) return;
+  const m = DB.maint.find(x => x.id === mid); if (!m || !confirm('حذف سجل الصيانة؟ سيُحذف قيده من الصندوق أيضاً.')) return;
+  DB.maint = DB.maint.filter(x => x.id !== mid); DB.cash = DB.cash.filter(e => !((e.type === 'maint' || e.type === 'repair_rev') && e.ref === mid));
+  const b = bikeOf(m.bike_id); if (b && b.status === 'maintenance' && !openMaint(b.id)) b.status = 'available';
+  logAct('حذف سجل صيانة', bikeLabel(bikeOf(m.bike_id)) + ' — ' + fmt(m.total));
+  save(); flash('ok', 'تم حذف سجل الصيانة'); render();
+}
+
+function saveType(f) {
+  if (!needAdmin()) return;
+  const name = (f.name || '').trim(); if (!name) return fail('أدخل اسم النوع');
+  if (DB.types.some(t => t.name === name && t.id !== +f.id)) return fail('اسم النوع مسجّل مسبقاً');
+  const v = {name, rate: numIn(f.rate), rate15: numIn(f.rate15), rate30: numIn(f.rate30), rate_day: numIn(f.rate_day), rate_week: numIn(f.rate_week), month_price: numIn(f.month_price), notes: (f.notes || '').trim()};
+  if (+f.id) {
+    const t = DB.types.find(x => x.id === +f.id); let n = 0; Object.assign(t, v);
+    if (f.apply) DB.bikes.filter(b => b.type_id === t.id).forEach(b => { b.rate = v.rate; b.rate15 = v.rate15; b.rate30 = v.rate30; b.rate_day = v.rate_day; b.rate_week = v.rate_week; b.month_price = v.month_price; n++; });
+    logAct('تعديل نوع دراجات', name + (f.apply ? ' — طُبّق السعر على ' + n + ' دراجة' : '')); flash('ok', f.apply ? 'تم الحفظ وتطبيق السعر على ' + n + ' دراجة (الإيجارات الجارية لا تتأثر)' : 'تم حفظ النوع');
+  } else { DB.types.push({id: nid('type'), ...v}); logAct('إضافة نوع دراجات', name); flash('ok', 'تمت إضافة النوع'); }
+  save(); go('types');
+}
+function deleteType(id) {
+  if (!needAdmin()) return;
+  const t = DB.types.find(x => x.id === id); if (!t || !confirm('حذف النوع؟ ستبقى دراجاته بأسعارها الحالية بدون نوع.')) return;
+  DB.bikes.forEach(b => { if (b.type_id === id) b.type_id = 0; }); DB.types = DB.types.filter(x => x.id !== id);
+  logAct('حذف نوع دراجات', t.name); save(); flash('ok', 'تم حذف النوع'); render();
+}
+async function saveUser(f) {
+  if (!needAdmin()) return;
+  const name = (f.name || '').trim(), pin = String(f.pin || '').trim();
+  if (!name) return fail('أدخل اسم المستخدم');
+  if (pin.length < 4) return fail('الرقم السري 4 أرقام على الأقل');
+  if (DB.users.some(u => u.name === name)) return fail('هذا الاسم مستخدم');
+  const first = !hasUsers();
+  const u = {id: nid('user'), name, role: (first || f.role === 'admin') ? 'admin' : 'staff', pin: '', legacy: false, active: true};
+  u.pin = await hashPin(pin, u); DB.users.push(u);
+  if (first) ssSet('uid', u.id);
+  logAct('إضافة مستخدم', name + ' (' + (u.role === 'admin' ? 'مدير' : 'موظف') + ')'); save();
+  flash('ok', first ? 'تم إنشاء حساب المدير وتفعيل القفل' : 'تمت إضافة المستخدم'); go('users');
+}
+function lastAdminGuard(u) { if (u.active && u.role === 'admin' && activeAdmins().length <= 1) { alert('لا يمكن: يجب أن يبقى مدير واحد مفعّل على الأقل.'); return true; } return false; }
+function purgeCustomers() {
+  if (!needAdmin()) return;
+  const keep = new Set(); DB.rentals.forEach(r => { if (r.status === 'active' || balance(r) > 0) keep.add(r.customer_id); });
+  const hasDone = new Set(DB.rentals.filter(r => r.status === 'finished').map(r => r.customer_id));
+  const gone = DB.customers.filter(c => hasDone.has(c.id) && !keep.has(c.id));
+  DB.customers = DB.customers.filter(c => !gone.includes(c)); gone.forEach(c => delete PHOTOS[c.id]); savePhotos();
+  logAct('تنظيف العملاء', 'حُذف ' + gone.length + ' عميل');
+  save(); flash('ok', 'تم حذف ' + gone.length + ' عميل أكملوا إيجاراتهم');
+}
+
+/* ====================== النسخ الاحتياطي ====================== */
+function backupObject(withPhotos) {
+  const o = {...DB, settings: {...DB.settings, sync_key: ''}};   // مفتاح الاستضافة لا يدخل في النسخ
+  if (withPhotos) o.photos = PHOTOS;
+  return o;
+}
+function backupFile() {
+  const n = new Date(), name = 'rental_backup_' + dayKey(n) + '_' + pad(n.getHours()) + '-' + pad(n.getMinutes()) + '.json';
+  return new File([JSON.stringify(backupObject(true))], name, {type: 'application/json'});
+}
+function markBackup() { DB.settings.last_backup = Date.now(); save(); }
+function downloadBackup() {
+  const f = backupFile(), url = URL.createObjectURL(f), a = document.createElement('a');
+  a.href = url; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  markBackup(); flash('ok', 'تم تنزيل النسخة الاحتياطية، احفظها في مكان آمن (واتساب أو Google Drive)'); render();
+}
+async function shareBackup() {
+  const f = backupFile();
+  if (navigator.canShare && navigator.canShare({files: [f]})) {
+    try { await navigator.share({files: [f], title: 'نسخة احتياطية - تأجير الدراجات'}); markBackup(); flash('ok', 'تمت مشاركة النسخة'); return render(); }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  downloadBackup();
+}
+async function applyRestore(d, photos, src) {
+  if (!d || !Array.isArray(d.bikes) || !Array.isArray(d.rentals) || !Array.isArray(d.customers)) throw new Error('bad');
+  if (!confirm('سيتم استبدال كل البيانات الحالية بمحتوى النسخة (' + d.bikes.length + ' دراجة، ' + d.rentals.length + ' إيجار). متابعة؟')) return false;
+  const keep = {sync_url: DB.settings.sync_url, sync_key: DB.settings.sync_key, sync_auto: DB.settings.sync_auto};
+  DB = normalize(d);
+  if (keep.sync_url) Object.assign(DB.settings, keep);
+  PHOTOS = (photos && typeof photos === 'object') ? photos : {};
+  SYNCMETA = {}; Object.keys(PHOTOS).forEach(id => { SYNCMETA[id] = PHOTOS[id].length; }); await store.set('syncmeta', SYNCMETA);
+  await savePhotos(); logAct('استرجاع نسخة احتياطية', src); save();
+  return true;
+}
+function restoreBackup(file) {
+  if (!needAdmin()) return;
+  const rd = new FileReader();
+  rd.onload = async () => {
+    try {
+      const d = JSON.parse(rd.result);
+      if (await applyRestore(d, d.photos, 'من ملف')) { flash('ok', 'تم استرجاع النسخة الاحتياطية'); go('dashboard'); }
+    } catch (e) { alert('الملف غير صالح. اختر ملف نسخة احتياطية صحيح (.json).'); }
+  };
+  rd.readAsText(file);
+}
+
+/* ====================== النسخ على الاستضافة (InfinityFree) ====================== */
+let syncBusy = false, SYNCMETA = {}, nextTry = 0;
+const syncReady = () => !!(DB.settings.sync_url && DB.settings.sync_key);
+const setSyncStatus = t => { const el = $('#syncst'); if (el) el.textContent = t; };
+async function syncCall(action, data) {
+  const s = DB.settings; if (!syncReady()) throw new Error('اضبط رابط الاستضافة والمفتاح أولاً');
+  const url = s.sync_url + (s.sync_url.indexOf('?') > -1 ? '&' : '?') + 'i=1';   // يتجاوز حماية InfinityFree للطلبات الآلية
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 90000); let res;
+  try { res = await fetch(url, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify({k: s.sync_key, a: action, d: data}), signal: ctl.signal, cache: 'no-store'}); }
+  catch (e) { throw new Error(navigator.onLine ? 'تعذّر الوصول إلى الاستضافة. تحقق من الرابط وأن الموقع يعمل.' : 'لا يوجد اتصال بالإنترنت'); }
+  finally { clearTimeout(t); }
+  const txt = await res.text(); let j;
+  try { j = JSON.parse(txt); } catch (e) { throw new Error('ردّ الاستضافة غير صحيح (قد تمنعه حماية InfinityFree أو الرابط خاطئ). تأكد من الرابط ثم أعد المحاولة.'); }
+  if (!j.ok) throw new Error(j.message || 'فشلت العملية');
+  return j;
+}
+async function syncPush(manual) {
+  if (syncBusy) return;
+  if (!syncReady()) { if (manual) alert('اضبط رابط الاستضافة والمفتاح أولاً'); return; }
+  if (!navigator.onLine) { if (manual) alert('لا يوجد اتصال بالإنترنت'); return; }
+  syncBusy = true; setSyncStatus('جارٍ الرفع…');
+  try {
+    await whenSaved(); unsynced = false;
+    const diff = Object.keys(PHOTOS).filter(id => SYNCMETA[id] !== PHOTOS[id].length);
+    await syncCall('put', backupObject(false));
+    let batch = {}, sent = [], size = 0;
+    const flushB = async () => { if (!sent.length) return; await syncCall('putphotos', batch); sent.forEach(id => { SYNCMETA[id] = PHOTOS[id].length; }); batch = {}; sent = []; size = 0; };
+    for (const id of diff) { batch[id] = PHOTOS[id]; sent.push(id); size += PHOTOS[id].length; if (size > 900000) await flushB(); }
+    await flushB(); await store.set('syncmeta', SYNCMETA);
+    DB.settings.last_sync = Date.now(); DB.settings.sync_err = '';
+    if (manual) { logAct('رفع نسخة إلى الاستضافة', diff.length + ' صورة جديدة'); flash('ok', 'تم رفع النسخة إلى الاستضافة'); }
+    save(true); nextTry = 0;
+  } catch (e) {
+    unsynced = true; DB.settings.sync_err = e.message; save(true); nextTry = Date.now() + 600000;
+    if (manual) alert(e.message);
+  } finally { syncBusy = false; if (manual) render(); else setSyncStatus(DB.settings.last_sync ? 'آخر رفع: ' + dtf(DB.settings.last_sync) : ''); }
+}
+async function syncPull() {
+  if (!needAdmin()) return;
+  if (!syncReady()) return alert('اضبط رابط الاستضافة والمفتاح أولاً');
+  try {
+    const j = await syncCall('get');
+    if (await applyRestore(j.db, j.photos, 'من الاستضافة')) { flash('ok', 'تم الاسترجاع من الاستضافة (' + dtf(j.saved_at) + ')'); go('dashboard'); }
+  } catch (e) { alert(e.message === 'bad' ? 'النسخة على الاستضافة غير صالحة.' : e.message); }
+}
+async function syncPing() {
+  try { const j = await syncCall('ping'); alert('✓ الاتصال سليم.\nعدد النسخ على الاستضافة: ' + j.backups + (j.last ? '\nآخر نسخة: ' + dtf(j.last) : '')); } catch (e) { alert(e.message); }
+}
+function autoSync() {
+  const s = DB.settings; if (!READY || !s.sync_auto || !syncReady() || syncBusy || !navigator.onLine || Date.now() < nextTry) return;
+  if (unsynced || Date.now() - (s.last_sync || 0) > 864e5) syncPush(false);
+}
+setInterval(autoSync, 120000);
+window.addEventListener('online', () => setTimeout(autoSync, 2500));
+
+/* ====================== القفل بالرقم السري ====================== */
+async function hashPin(p, u) {
+  const salt = (u && !u.legacy) ? 'rent:' + u.id + ':' : 'rent:';
+  if (window.crypto && crypto.subtle) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + p)); return 'h:' + [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+  let h = 5381; for (const ch of salt + p) h = ((h << 5) + h + ch.charCodeAt(0)) | 0; return 'p:' + h;
+}
+const ssGet = k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
+const ssSet = (k, v) => { try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} };
+const hasUsers = () => DB.users.some(u => u.active);
+const curUser = () => { const id = +ssGet('uid') || 0; return DB.users.find(u => u.id === id && u.active) || null; };
+const locked = () => hasUsers() && !curUser();
+const isAdmin = () => !hasUsers() || (!!curUser() && curUser().role === 'admin');
+const who = () => (curUser() && curUser().name) || 'المدير';
+const activeAdmins = () => DB.users.filter(u => u.active && u.role === 'admin');
+const needAdmin = () => { if (isAdmin()) return true; alert('هذه العملية للمدير فقط.'); return false; };
+let fails = 0, lockUntil = 0;
+function logAct(action, details) {
+  DB.log.push({id: nid('log'), at: Date.now(), user: who(), action, details: String(details || '').slice(0, 300)});
+  if (DB.log.length > 1500) DB.log.splice(0, DB.log.length - 1000);
+}
+
+/* ====================== التوجيه ====================== */
+function route() { const h = location.hash.replace(/^#\/?/, '') || 'dashboard'; const [p, q] = h.split('?'), parts = p.split('/'); return {name: parts[0], arg: parts[1], q: new URLSearchParams(q || '')}; }
+function go(h) { if (location.hash === '#/' + h) render(); else location.hash = '#/' + h; }
+
+/* ====================== العروض ====================== */
+function chip(s) {
+  const m = {available: ['متاحة', 'ok'], rented: ['مؤجرة', 'warn'], maintenance: ['صيانة', 'bad'], sold: ['مباعة', ''], active: ['جارٍ', 'warn'], finished: ['منتهٍ', 'ok'], cancelled: ['ملغي', 'bad'], open: ['قيد الصيانة', 'warn'], done: ['مكتملة', 'ok']};
+  return '<span class="chip ' + m[s][1] + '">' + m[s][0] + '</span>';
+}
+function fleetCounts() {
+  const live = DB.bikes.filter(b => b.status !== 'sold'), rented = live.filter(b => isRented(b.id)).length;
+  const maint = live.filter(b => !isRented(b.id) && b.status === 'maintenance').length;
+  return {total: live.length, rented, maint, avail: live.length - rented - maint, sold: DB.bikes.length - live.length};
+}
+function fleetBar() {
+  const c = fleetCounts();
+  return '<div class="stats"><div class="stat"><b>' + c.total + '</b><span>عدد الدراجات' + (c.sold ? ' (+' + c.sold + ' مباعة)' : '') + '</span></div><div class="stat ok"><b>' + c.avail + '</b><span>متاحة الآن</span></div>' +
+    '<div class="stat warn"><b>' + c.rented + '</b><span>مؤجرة الآن</span></div><div class="stat bad"><b>' + c.maint + '</b><span>في الصيانة</span></div></div>';
+}
+function backupBanner() {
+  const has = DB.bikes.length + DB.rentals.length + DB.customers.length > 0, last = Math.max(DB.settings.last_backup || 0, DB.settings.last_sync || 0), days = last ? Math.floor((Date.now() - last) / 864e5) : null;
+  if (!has || (last && days < 7)) return '';
+  return '<div class="fl warn noprint">' + (last ? 'مرّت ' + days + ' يوماً على آخر نسخة احتياطية.' : 'لم تنزّل نسخة احتياطية بعد.') + ' البيانات محفوظة على هذا الجوال فقط. <a href="#/settings">نزّل نسخة الآن</a></div>';
+}
+
+function vDashboard() {
+  const today = dayKey(Date.now()), done = DB.rentals.filter(r => r.status === 'finished' && r.arrival && dayKey(r.arrival) === today);
+  const tc = DB.cash.filter(e => dayKey(e.at) === today);
+  const collected = sum(tc.filter(e => ['adv', 'rental_pay', 'debt', 'repair_rev'].includes(e.type)), e => e.amount);
+  const spent = -sum(tc.filter(e => e.type === 'expense' || e.type === 'maint'), e => e.amount);
+  const act = activeRentals(), free = DB.bikes.filter(b => b.status === 'available' && !isRented(b.id)), bal = cashBalance();
+  return backupBanner() + fleetBar() +
+    '<div class="stats"><div class="stat"><b>' + fmt(sum(done, r => r.total)) + '</b><span>إيراد اليوم (' + CUR + ') · ' + done.length + ' إيجار</span></div>' +
+    '<div class="stat"><b>' + fmt(collected) + '</b><span>المحصّل اليوم</span></div>' +
+    (isAdmin() ? '<div class="stat warn"><b>' + fmt(spent) + '</b><span>مصروفات وصيانة اليوم</span></div>' +
+    '<div class="stat ' + (bal >= 0 ? 'ok' : 'bad') + '"><b>' + fmt(bal) + '</b><span>رصيد الصندوق</span></div>' : '') + '</div>' +
+    '<h1>الإيجارات الجارية</h1>' + (act.length ? '' : '<div class="card empty">لا توجد إيجارات جارية. اختر دراجة متاحة لبدء إيجار.</div>') +
+    '<div class="grid">' + act.map(r => { const c = custOf(r.customer_id); return '<div class="card rt" data-id="' + r.id + '">' +
+      '<div class="top2"><span style="display:flex;gap:8px;align-items:center">' + bikeAvatar(bikeOf(r.bike_id)) + '<b>' + esc(bikeLabel(bikeOf(r.bike_id))) + '</b></span><span class="chip">' + esc(planLabel(r)) + ' · ' + fmt(r.price) + '</span></div>' +
+      '<div class="who">' + avatar(c) + '<span>' + esc(cname(r)) + (c && c.phone ? ' · ' + esc(c.phone) : '') + '</span></div>' +
+      '<div class="clock">00:00:00</div><div class="hint">بدأ ' + dtf(r.start) + (r.planned_end ? ' · ينتهي ' + dtf(r.planned_end) : ' · مدة مفتوحة') + '</div>' +
+      '<div class="sub" style="margin-top:6px"><span>المبلغ الآن: <b class="live-amt">0</b> ' + CUR + '</span><span class="rem"></span></div>' +
+      '<a class="btn block" href="#/end/' + r.id + '">استلام الدراجة وحساب المبلغ</a><a class="btn sec sm block" style="margin-top:6px" href="#/contract/' + r.id + '">طباعة العقد</a></div>'; }).join('') + '</div>' +
+    '<h2>الدراجات المتاحة</h2>' + (free.length ? '' : '<div class="card empty">' + (DB.bikes.length ? 'لا توجد دراجات متاحة حالياً.' : 'أضف أول دراجة من تبويب "الدراجات".') + '</div>') +
+    '<div class="grid">' + free.map(b => '<div class="card" style="margin:0"><div class="top2"><span style="display:flex;gap:8px;align-items:center">' + bikeAvatar(b) + '<b>' + esc(b.name) + '</b></span>' + (b.rate ? '<span class="chip ok">' + fmt(b.rate) + ' / ساعة</span>' : '') + '</div>' +
+      '<div class="hint">' + esc([b.size && 'مقاس ' + b.size, b.serial].filter(Boolean).join(' · ')) + '</div><br><a class="btn block" href="#/rent?bike=' + b.id + '">تأجير هذه الدراجة</a></div>').join('') + '</div>';
+}
+
+function vRent(q) {
+  const bikes = DB.bikes.filter(b => b.status === 'available' && !isRented(b.id)), sel = +q.get('bike') || (bikes[0] && bikes[0].id);
+  if (!bikes.length) return '<h1>تأجير جديد</h1><div class="card empty">لا توجد دراجات متاحة حالياً.</div>';
+  const custs = [...DB.customers].sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+  return '<h1>تأجير جديد</h1><form class="card" data-form="rent">' +
+    '<label>الدراجة</label><select name="bike_id" required>' + bikes.map(b => '<option value="' + b.id + '" data-rate="' + (b.rate || DB.settings.default_rate) + '" data-r15="' + priceFor(b, 'q15') + '" data-r30="' + priceFor(b, 'q30') + '" data-month="' + (b.month_price || '') + '"' + (b.id === sel ? ' selected' : '') + '>' + esc(bikeLabel(b) + (b.size ? ' — ' + b.size : '')) + '</option>').join('') + '</select>' +
+    '<div id="bimg"></div><label>المستأجر</label><select name="customer_id" id="cs"><option value="0">+ عميل جديد</option>' + custs.map(c => '<option value="' + c.id + '">' + (c.blocked ? '⛔ ' : '') + esc(c.name + (c.phone ? ' — ' + c.phone : '')) + '</option>').join('') + '</select>' +
+    '<div id="newc"><div class="row c2"><div><label>اسم العميل</label><input name="c_name"></div><div><label>رقم الهاتف</label><input name="c_phone" inputmode="tel"></div></div>' +
+    '<label>العنوان</label><input name="c_address"><div class="row c2"><div><label>الضامن / المعرِّف</label><input name="c_guarantor"></div><div><label>هاتف الضامن</label><input name="c_gphone" inputmode="tel"></div></div>' +
+    '<div class="photorow"><span id="pprev">' + '<span class="avatar lg">+</span>' + '</span><div><label class="btn sec sm" style="margin:0">التقاط / اختيار صورة العميل<input type="file" accept="image/*" id="pf" style="display:none"></label></div></div></div>' +
+    '<h2>الأجرة والمدة</h2><div class="row c2"><div><label>نظام الأجرة</label><select name="plan" id="plan">' + Object.entries(PLANS).map(([k, p]) => '<option value="' + k + '"' + (k === 'h60' ? ' selected' : '') + '>' + p.label + '</option>').join('') + '</select></div>' +
+    '<div><label id="plabel">السعر لكل ساعة (' + CUR + ') — إدخال يدوي</label><input name="price" id="price" inputmode="decimal" required></div></div>' +
+    '<div class="row c2"><div><label id="qlabel">' + PLANS.h60.qlabel + '</label><input name="qty" id="qty" inputmode="numeric" placeholder="اتركه فارغاً لمدة مفتوحة"></div>' +
+    '<div><label>توقيت البدء</label><input type="datetime-local" name="start" id="start" value="' + dtLocal(Date.now()) + '"><div class="hint">عدّله يدوياً إن بدأ الإيجار قبل تسجيله</div></div></div>' +
+    '<div id="rprev" class="card" style="background:var(--soft);margin:10px 0 0;padding:10px"></div>' +
+    '<div class="row c2"><div><label>عربون / دفعة مقدمة (' + CUR + ')</label><input name="deposit" inputmode="decimal" value="0"></div><div><label>ضمان آخر (هوية / رخصة ...)</label><input name="deposit_note" maxlength="150"></div></div>' +
+    '<label>ملاحظات</label><input name="notes" maxlength="255"><br><button class="btn big block">بدء الإيجار</button></form>';
+}
+
+function vEnd(id) {
+  const r = rentalOf(+id); if (!r || r.status !== 'active') { flash('err', 'الإيجار غير موجود أو منتهٍ'); return null; }
+  return '<h1>استلام الدراجة</h1><div class="card"><div class="kv"><span>الدراجة</span><b>' + esc(bikeLabel(bikeOf(r.bike_id))) + '</b></div><div class="kv"><span>المستأجر</span><b>' + esc(cname(r)) + '</b></div>' +
+    '<div class="kv"><span>نظام الأجرة</span><b>' + esc(planDesc(r)) + ' ' + CUR + '</b></div>' +
+    '<div class="kv"><span>توقيت البدء</span><b>' + dtf(r.start) + '</b></div><div class="kv"><span>توقيت الانتهاء المتفق عليه</span><b>' + (r.planned_end ? dtf(r.planned_end) : 'مفتوح') + '</b></div></div>' +
+    '<form class="card" data-form="end" data-id="' + r.id + '"><label>توقيت الوصول (الاستلام)</label><input type="datetime-local" name="arrival" id="arrival" value="' + dtLocal(Date.now()) + '"><div class="hint">الوقت الحالي افتراضياً، وعدّله إن كانت الدراجة وصلت قبل التسجيل</div>' +
+    '<div id="brk" style="margin-top:10px"></div>' +
+    '<div class="row c2"><div><label>خصم (' + CUR + ')</label><input name="discount" id="disc" inputmode="decimal" value="0"></div><div><label>المبلغ المدفوع الآن</label><input name="paid" id="paid" inputmode="decimal" placeholder="اتركه فارغاً = دفع كامل المطلوب"><div class="hint">أي مبلغ أقل يُسجَّل المتبقي دَيْناً على العميل</div></div></div>' +
+    '<label>ملاحظات الاستلام</label><input name="end_notes" maxlength="150">' +
+    (DB.settings.auto_delete ? '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="del_customer" value="1" checked> حذف بيانات العميل بعد الإنهاء</label><div class="hint">لا يُحذف إذا بقي عليه مبلغ</div>' : '') +
+    '<br><button class="btn big block">تأكيد الاستلام وإصدار الإيصال</button></form>' +
+    '<button class="btn bad sm noprint" data-act="cancel" data-id="' + r.id + '">إلغاء الإيجار (تم بالخطأ)</button>';
+}
+function bindEnd() {
+  const f = $('form[data-form=end]'); if (!f) return; const r = rentalOf(+f.dataset.id); if (!r) return;
+  const upd = () => {
+    const arr = f.arrival.value ? parseLocal(f.arrival.value) : Date.now(), box = $('#brk');
+    if (isNaN(arr) || arr < r.start) { box.innerHTML = '<div class="fl err">وقت الوصول قبل وقت البداية</div>'; return; }
+    const c = calcRental(r, arr), disc = Math.min(Math.max(0, numIn(f.discount.value)), c.total), total = c.total - disc;
+    const due = Math.max(0, total - Math.min(r.deposit, total)), refund = Math.max(0, r.deposit - total);
+    box.innerHTML = '<div class="kv"><span>المدة الفعلية</span><b dir="ltr">' + dur((arr - r.start) / 1000) + '</b></div>' +
+      '<div class="kv"><span>أجرة الإيجار</span><b>' + fmt(c.base) + ' ' + CUR + '</b></div>' +
+      '<div class="kv"><span>مدة التأخير</span><b>' + (c.delayMin ? '<span class="neg">' + durMin(c.delayMin) + '</span>' : '—') + '</b></div>' +
+      '<div class="kv"><span>تكلفة التأخير</span><b>' + (c.delayCost ? '<span class="neg">' + fmt(c.delayCost) + '</span> ' + CUR : '—') + '</b></div>' +
+      (disc ? '<div class="kv"><span>الخصم</span><b>−' + fmt(disc) + '</b></div>' : '') +
+      '<div class="kv"><span>الإجمالي</span><b class="big">' + fmt(total) + ' ' + CUR + '</b></div>' +
+      '<div class="kv"><span>العربون المستلم</span><b>' + fmt(r.deposit) + '</b></div>' +
+      '<div class="kv"><span>المطلوب دفعه الآن</span><b>' + fmt(due) + ' ' + CUR + '</b></div>' + (refund ? '<div class="kv"><span>يُرد للعميل من العربون</span><b>' + fmt(refund) + '</b></div>' : '');
+  };
+  ['input', 'change'].forEach(e => { f.arrival.addEventListener(e, upd); f.discount.addEventListener(e, upd); }); upd();
+}
+function bindBike() {
+  PEND = {mode: 'keep', data: null};
+  const sel = $('#btype'), f = $('form[data-form=bike]'); if (!sel || !f) return;
+  sel.onchange = () => { const o = sel.selectedOptions[0]; if (!o || o.value === '0') return; f.rate.value = o.dataset.rate || ''; f.rate15.value = o.dataset.r15 || ''; f.rate30.value = o.dataset.r30 || ''; f.rate_day.value = o.dataset.day || ''; f.rate_week.value = o.dataset.week || ''; f.month_price.value = o.dataset.month || ''; };
+}
+function bindRent() {
+  const f = $('form[data-form=rent]'); if (!f) return; PEND = {mode: 'keep', data: null};
+  let touched = false; const plan = f.plan, price = f.price, qty = f.qty, start = f.start, bike = f.bike_id;
+  const defPrice = () => priceFor(bikeOf(+bike.value), plan.value) || '';
+  const showImg = () => { const b = bikeOf(+bike.value), box = $('#bimg'); if (!box) return;
+    box.innerHTML = b ? '<div class="photorow">' + bikeAvatar(b) + '<span class="hint">أسعار هذه الدراجة: 15د ' + fmt(priceFor(b, 'q15')) + ' · 30د ' + fmt(priceFor(b, 'q30')) + ' · ساعة ' + fmt(priceFor(b, 'h60')) + (priceFor(b, 'day') ? ' · يوم ' + fmt(priceFor(b, 'day')) : '') + (priceFor(b, 'week') ? ' · أسبوع ' + fmt(priceFor(b, 'week')) : '') + (b.month_price ? ' · شهر ' + fmt(b.month_price) : '') + '</span></div>' : ''; };
+  const prev = () => {
+    const p = plan.value, s = start.value ? parseLocal(start.value) : Date.now(), q = Math.max(0, Math.round(numIn(qty.value))), pr = numIn(price.value);
+    const n = q, pe = plannedEnd(p, s, n);
+    $('#rprev').innerHTML = pe ? 'ينتهي الإيجار: <b>' + dtf(pe) + '</b> · الأجرة المتفق عليها: <b>' + fmt(p === 'flat' ? pr : n * pr) + ' ' + CUR + '</b>' : p === 'month' ? 'اشتراك شهري مفتوح: تُحسب الأشهر الكاملة + الأيام الزائدة (سعر الشهر ÷ 30) عند الاستلام.' : 'مدة مفتوحة: تُحسب الأجرة بحسب الوقت الفعلي عند الاستلام.';
+  };
+  const onPlan = () => { $('#plabel').textContent = (plan.value === 'month' ? 'سعر الشهر' : plan.value === 'flat' ? 'المبلغ المقطوع الإجمالي' : 'السعر لكل ' + PLANS[plan.value].label) + ' (' + CUR + ') — إدخال يدوي'; $('#qlabel').textContent = PLANS[plan.value].qlabel;
+    qty.placeholder = plan.value === 'flat' ? 'عدد الأيام' : 'اتركه فارغاً لمدة مفتوحة'; if (!touched) price.value = defPrice(); prev(); };
+  price.addEventListener('input', () => { touched = true; prev(); }); plan.onchange = onPlan; bike.onchange = () => { touched = false; price.value = defPrice(); showImg(); prev(); };
+  qty.addEventListener('input', prev); start.addEventListener('input', prev); price.value = defPrice(); showImg(); prev();
+  const cs = $('#cs'), t = () => { $('#newc').style.display = cs.value === '0' ? 'block' : 'none'; }; cs.onchange = t; t();
+}
+
+function receiptText(r) {
+  return [DB.settings.shop_name, 'إيصال #' + r.id, 'المستأجر: ' + cname(r), 'الدراجة: ' + bikeLabel(bikeOf(r.bike_id)), 'نظام الأجرة: ' + planLabel(r) + ' ' + fmt(r.price),
+    'البدء: ' + dtf(r.start), 'الوصول: ' + dtf(r.arrival), 'التأخير: ' + (r.delay_min ? durMin(r.delay_min) + ' (' + fmt(r.delay_cost) + ')' : 'لا يوجد'),
+    'الإجمالي: ' + fmt(r.total) + ' ' + CUR, 'المدفوع: ' + fmt(r.paid), 'المتبقي: ' + fmt(balance(r)) + ' ' + CUR, DB.settings.footer].join('\n');
+}
+function vReceipt(id) {
+  const r = rentalOf(+id); if (!r) { flash('err', 'الإيصال غير موجود'); return null; }
+  const bal = balance(r), c = custOf(r.customer_id), phone = (TMP[r.id] && TMP[r.id].phone) || (c && c.phone) || '', fin = r.status === 'finished';
+  return '<div class="receipt card"><h1 style="text-align:center;margin-bottom:2px">' + esc(DB.settings.shop_name) + '</h1><div style="text-align:center;color:var(--muted)">' + esc(DB.settings.shop_phone) + '</div><br>' +
+    '<div class="kv"><span>رقم الإيصال</span><b>#' + r.id + '</b></div><div class="kv"><span>الحالة</span>' + chip(r.status) + '</div>' +
+    '<div class="kv"><span>المستأجر</span><b>' + esc(cname(r)) + '</b></div>' + (phone ? '<div class="kv"><span>الهاتف</span><b>' + esc(phone) + '</b></div>' : '') + (r.by ? '<div class="kv"><span>الموظف</span><b>' + esc(r.by) + '</b></div>' : '') +
+    '<div class="kv"><span>الدراجة</span><b>' + esc(bikeLabel(bikeOf(r.bike_id))) + '</b></div>' +
+    '<div class="kv"><span>نظام الأجرة</span><b>' + esc(planDesc(r)) + '</b></div>' +
+    '<div class="kv"><span>توقيت البدء</span><b>' + dtf(r.start) + '</b></div><div class="kv"><span>توقيت الانتهاء المتفق عليه</span><b>' + (r.planned_end ? dtf(r.planned_end) : 'مفتوح') + '</b></div>' +
+    '<div class="kv"><span>توقيت الوصول</span><b>' + dtf(r.arrival) + '</b></div>' +
+    (fin ? '<div class="kv"><span>المدة الفعلية</span><b dir="ltr">' + dur((r.arrival - r.start) / 1000) + '</b></div>' +
+      '<div class="kv"><span>أجرة الإيجار</span><b>' + fmt(r.base) + '</b></div>' +
+      '<div class="kv"><span>مدة التأخير</span><b>' + (r.delay_min ? durMin(r.delay_min) : '—') + '</b></div><div class="kv"><span>تكلفة التأخير</span><b>' + (r.delay_cost ? fmt(r.delay_cost) : '—') + '</b></div>' +
+      (r.discount > 0 ? '<div class="kv"><span>الخصم</span><b>' + fmt(r.discount) + '</b></div>' : '') +
+      '<div class="kv"><span>الإجمالي</span><b class="big">' + fmt(r.total) + ' ' + CUR + '</b></div><div class="kv"><span>العربون</span><b>' + fmt(r.deposit) + '</b></div>' +
+      '<div class="kv"><span>المدفوع</span><b>' + fmt(r.paid) + '</b></div>' + (r.refund > 0 ? '<div class="kv"><span>رُدّ للعميل من العربون</span><b>' + fmt(r.refund) + '</b></div>' : '') +
+      '<div class="kv"><span>المتبقي على العميل</span><b style="color:' + (bal > 0 ? 'var(--bad)' : 'var(--ok)') + '">' + fmt(bal) + ' ' + CUR + '</b></div>' : '') +
+    (r.deposit_note ? '<div class="kv"><span>ضمان</span><b>' + esc(r.deposit_note) + '</b></div>' : '') + (r.notes ? '<div class="kv"><span>ملاحظات</span><b>' + esc(r.notes) + '</b></div>' : '') +
+    '<p style="text-align:center;color:var(--muted)">' + esc(DB.settings.footer) + '</p></div>' +
+    (fin && bal > 0 ? '<form class="card receipt noprint" data-form="paydebt" data-id="' + r.id + '"><label>تسجيل دفعة من المتبقي</label><input name="amount" inputmode="decimal" value="' + bal + '"><br><button class="btn block">تسجيل الدفعة</button></form>' : '') +
+    '<div class="receipt noprint acts"><button class="btn" data-act="print">طباعة / PDF</button><a class="btn sec" href="#/contract/' + r.id + '">عقد الإيجار</a><button class="btn sec" data-act="sharetext" data-id="' + r.id + '">مشاركة نصية</button><a class="btn sec" href="#/dashboard">الرئيسية</a></div>';
+}
+
+function vRentals(q) {
+  const st = q.get('st') || '', from = q.get('from') || '', to = q.get('to') || '', qs = (q.get('q') || '').trim().toLowerCase();
+  let l = [...DB.rentals].sort((a, b) => b.id - a.id);
+  if (st === 'debt') l = l.filter(r => balance(r) > 0); else if (st === 'late') l = l.filter(r => r.status === 'finished' && r.delay_min > 0); else if (st) l = l.filter(r => r.status === st);
+  if (from) l = l.filter(r => dayKey(r.start) >= from); if (to) l = l.filter(r => dayKey(r.start) <= to);
+  if (qs) l = l.filter(r => (cname(r) + ' ' + ((custOf(r.customer_id) || {}).phone || '') + ' ' + bikeLabel(bikeOf(r.bike_id))).toLowerCase().includes(qs));
+  const opt = (k, v) => '<option value="' + k + '"' + (st === k ? ' selected' : '') + '>' + v + '</option>';
+  return '<h1>سجل الإيجار والمدفوعات</h1><form class="filters" data-form="filter" data-page="rentals"><select name="st"><option value="">كل الحالات</option>' + opt('active', 'جارية') + opt('finished', 'منتهية') + opt('debt', 'عليها متبقي') + opt('late', 'متأخرة') + opt('cancelled', 'ملغاة') + '</select>' +
+    '<input name="q" value="' + esc(qs) + '" placeholder="اسم / هاتف / دراجة"><input type="date" name="from" value="' + esc(from) + '" aria-label="من"><input type="date" name="to" value="' + esc(to) + '" aria-label="إلى"><button class="btn" style="grid-column:1/-1">بحث</button></form>' +
+    '<div class="tw"><table><tr><th>#</th><th>المستأجر</th><th>الدراجة</th><th>النظام</th><th>البدء</th><th>الوصول</th><th>التأخير</th><th>الإجمالي</th><th>المتبقي</th><th>الحالة</th><th></th></tr>' +
+    l.slice(0, 200).map(r => '<tr><td>' + r.id + '</td><td>' + esc(cname(r)) + '</td><td>' + esc(bikeLabel(bikeOf(r.bike_id))) + '</td><td>' + esc(planLabel(r)) + '</td><td>' + dtf(r.start) + '</td><td>' + dtf(r.arrival) + '</td>' +
+      '<td>' + (r.delay_min ? '<span class="chip bad">' + durMin(r.delay_min) + '</span>' : '—') + '</td><td>' + (r.status === 'finished' ? fmt(r.total) : '—') + '</td><td>' + (r.status === 'finished' ? fmt(balance(r)) : '—') + '</td><td>' + chip(r.status) + '</td>' +
+      '<td><a class="btn sm sec" href="#/' + (r.status === 'active' ? 'end/' : 'receipt/') + r.id + '">' + (r.status === 'active' ? 'استلام' : 'إيصال') + '</a> <a class="btn sm sec" href="#/contract/' + r.id + '">عقد</a></td></tr>').join('') +
+    (l.length ? '' : '<tr><td colspan="11" class="empty">لا توجد نتائج</td></tr>') + '</table></div>' + (l.length > 200 ? '<div class="hint">يظهر أحدث 200 من ' + l.length + '</div>' : '');
+}
+
+function vBikes(q) {
+  const adm = isAdmin(), e = adm ? bikeOf(+q.get('edit')) : null, live = DB.bikes.filter(b => b.status !== 'sold').sort((a, b) => (a.name + a.serial).localeCompare(b.name + b.serial, 'ar')), sold = DB.bikes.filter(b => b.status === 'sold').sort((a, b) => b.sold_at - a.sold_at);
+  return '<h1>إدارة المخزون (الدراجات)</h1>' + fleetBar() + (!adm ? '' :
+    '<form class="card" data-form="bike"><input type="hidden" name="id" value="' + (e ? e.id : '') + '"><b>' + (e ? 'تعديل دراجة' : 'شراء / إضافة دراجة') + '</b>' +
+    '<div class="photorow"><span id="pprev">' + bikeAvatar(e, true) + '</span><div><label class="btn sec sm" style="margin:0">التقاط / اختيار صورة الدراجة<input type="file" accept="image/*" id="pf" style="display:none"></label>' + (e && PHOTOS['b' + e.id] ? ' <button type="button" class="btn sm bad" data-act="rmphoto">حذف الصورة</button>' : '') + '</div></div>' +
+    '<div class="row c3"><div><label>اسم الدراجة</label><input name="name" required value="' + esc(e ? e.name : '') + '"></div><div><label>المقاس</label><input name="size" value="' + esc(e ? e.size : '') + '"></div><div><label>الرقم التسلسلي</label><input name="serial" value="' + esc(e ? e.serial : '') + '"></div></div>' +
+    '<label>نوع الدراجة (يُعبّئ السعر تلقائياً)</label><select name="type_id" id="btype"><option value="0">— بدون نوع —</option>' + DB.types.map(t => '<option value="' + t.id + '" data-rate="' + t.rate + '" data-r15="' + (t.rate15 || '') + '" data-r30="' + (t.rate30 || '') + '" data-day="' + (t.rate_day || '') + '" data-week="' + (t.rate_week || '') + '" data-month="' + (t.month_price || '') + '"' + (e && e.type_id === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('') + '</select>' +
+    '<div class="row c3"><div><label>سعر الشراء (' + CUR + ')</label><input name="buy_price" inputmode="decimal" value="' + (e ? e.buy_price : '') + '"></div><div><label>سعر البيع المتوقع</label><input name="sell_price" inputmode="decimal" value="' + (e ? e.sell_price : '') + '"></div>' +
+    '<div><label>سعر الإيجار الافتراضي للساعة</label><input name="rate" inputmode="decimal" value="' + (e ? e.rate : DB.settings.default_rate) + '"></div></div>' +
+    '<div class="row c2"><div><label>سعر إيجار 15 دقيقة (' + CUR + ')</label><input name="rate15" inputmode="decimal" value="' + (e && e.rate15 ? e.rate15 : '') + '"></div><div><label>سعر إيجار 30 دقيقة (' + CUR + ')</label><input name="rate30" inputmode="decimal" value="' + (e && e.rate30 ? e.rate30 : '') + '"></div></div>' +
+    '<div class="row c2"><div><label>سعر اليوم (' + CUR + ')</label><input name="rate_day" inputmode="decimal" value="' + (e && e.rate_day ? e.rate_day : '') + '"></div><div><label>سعر الأسبوع (' + CUR + ')</label><input name="rate_week" inputmode="decimal" value="' + (e && e.rate_week ? e.rate_week : '') + '"></div></div>' +
+    '<div class="hint">أسعار هذه الدراجة وحدها: سعر الساعة أعلاه، و15 و30 دقيقة واليوم والأسبوع والشهر هنا. اترك 15 و30 فارغين ليُحسبا تلقائياً (ربع ونصف سعر الساعة)، واليوم والأسبوع من سعر الشهر. ويمكنك تعديل أي سعر عند بدء كل إيجار.</div>' +
+    '<div class="row c2"><div><label>سعر الاشتراك الشهري (اختياري)</label><input name="month_price" inputmode="decimal" value="' + (e && e.month_price ? e.month_price : '') + '"></div>' + (e ? '' : '<div><label>تاريخ الشراء</label><input type="date" name="buy_date" value="' + dayKey(Date.now()) + '"></div>') + '</div>' +
+    '<label>ملاحظات</label><input name="notes" value="' + esc(e ? e.notes : '') + '">' +
+    (e ? '' : '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="existing"> دراجة موجودة سابقاً (لا يُخصم ثمنها من الصندوق)</label>') +
+    '<br><button class="btn">' + (e ? 'حفظ التعديل' : 'تسجيل الدراجة') + '</button> ' + (e ? '<a class="btn sec" href="#/bikes">إلغاء</a>' : '') + '</form>') +
+    '<div class="tw"><table><tr><th>الدراجة</th><th>النوع</th><th>المقاس</th><th>الرقم التسلسلي</th><th>الشراء</th><th>البيع المتوقع</th><th>الإيجار/ساعة</th><th>الحالة</th><th></th></tr>' +
+    live.map(b => { const st = isRented(b.id) ? 'rented' : b.status; return '<tr><td><span style="display:flex;gap:8px;align-items:center">' + bikeAvatar(b) + esc(b.name) + '</span></td><td>' + esc((DB.types.find(t => t.id === b.type_id) || {}).name || '—') + '</td><td>' + esc(b.size) + '</td><td>' + esc(b.serial) + '</td><td>' + fmt(b.buy_price) + '</td><td>' + fmt(b.sell_price) + '</td><td>' + fmt(b.rate) + '<br><small class="hint">15د: ' + fmt(priceFor(b, 'q15')) + ' · 30د: ' + fmt(priceFor(b, 'q30')) + '</small></td><td>' + chip(st) + '</td>' +
+      '<td>' + (!adm ? '' : '<div class="acts"><a class="btn sm sec" href="#/bikes?edit=' + b.id + '">تعديل</a>' + (st === 'available' ? '<a class="btn sm sec" href="#/sell/' + b.id + '">بيع</a>' : '') + '<button class="btn sm bad" data-act="delbike" data-id="' + b.id + '">حذف</button></div>') + '</td></tr>'; }).join('') +
+    (live.length ? '' : '<tr><td colspan="9" class="empty">' + (adm ? 'سجّل أول دراجة من النموذج أعلاه' : 'لا توجد دراجات') + '</td></tr>') + '</table></div>' +
+    (sold.length ? '<h2>الدراجات المباعة</h2><div class="tw"><table><tr><th>الدراجة</th><th>تاريخ البيع</th><th>المشتري</th><th>الشراء</th><th>البيع</th><th>الربح/الخسارة</th><th></th></tr>' +
+      sold.map(b => { const g = b.sold_price - b.buy_price; return '<tr><td>' + esc(bikeLabel(b)) + '</td><td>' + dtf(b.sold_at).slice(0, 10) + '</td><td>' + esc(b.sold_to) + '</td><td>' + fmt(b.buy_price) + '</td><td>' + fmt(b.sold_price) + '</td><td class="' + (g >= 0 ? 'pos' : 'neg') + '">' + fmt(g) + '</td><td>' + (adm ? '<button class="btn sm sec" data-act="undosale" data-id="' + b.id + '">إلغاء البيع</button>' : '') + '</td></tr>'; }).join('') + '</table></div>' : '');
+}
+function vSell(id) {
+  const b = bikeOf(+id); if (!b || b.status !== 'available' || isRented(b.id)) { flash('err', 'لا يمكن بيع هذه الدراجة الآن'); return null; }
+  return '<h1>بيع دراجة</h1><div class="card"><div class="kv"><span>الدراجة</span><b>' + esc(bikeLabel(b)) + '</b></div><div class="kv"><span>سعر الشراء</span><b>' + fmt(b.buy_price) + ' ' + CUR + '</b></div></div>' +
+    '<form class="card" data-form="sell" data-id="' + b.id + '"><div class="row c2"><div><label>سعر البيع الفعلي (' + CUR + ')</label><input name="sold_price" inputmode="decimal" required value="' + (b.sell_price || '') + '"></div><div><label>تاريخ البيع</label><input type="date" name="sold_date" value="' + dayKey(Date.now()) + '"></div></div>' +
+    '<label>اسم المشتري</label><input name="sold_to"><div class="hint">يُضاف المبلغ للصندوق، وتخرج الدراجة من عدد المخزون.</div><br><button class="btn big block">تأكيد البيع</button></form>';
+}
+
+function vCustomers(q) {
+  const qs = (q.get('q') || '').trim().toLowerCase(); let l = [...DB.customers].sort((a, b) => b.id - a.id);
+  if (qs) l = l.filter(c => (c.name + ' ' + c.phone + ' ' + c.address + ' ' + c.guarantor).toLowerCase().includes(qs));
+  const bal = c => sum(DB.rentals.filter(r => r.customer_id === c.id), balance);
+  return '<h1>سجل حساب العملاء</h1><p><a class="btn" href="#/customer/new">+ إضافة عميل</a></p>' +
+    '<form class="filters" data-form="filter" data-page="customers" style="grid-template-columns:1fr auto"><input name="q" value="' + esc(qs) + '" placeholder="بحث بالاسم أو الهاتف أو العنوان أو الضامن"><button class="btn">بحث</button></form>' +
+    '<div class="tw"><table><tr><th></th><th>الاسم</th><th>الهاتف</th><th>العنوان</th><th>الضامن</th><th>الإيجارات</th><th>متبقٍ عليه</th><th></th></tr>' +
+    l.slice(0, 200).map(c => { const b = bal(c); return '<tr><td>' + avatar(c) + '</td><td>' + esc(c.name) + (c.blocked ? ' <span class="chip bad">محظور</span>' : '') + '</td><td>' + esc(c.phone) + '</td><td>' + esc(c.address) + '</td><td>' + esc(c.guarantor) + '</td><td>' + DB.rentals.filter(r => r.customer_id === c.id).length + '</td><td>' + (b > 0 ? '<span class="chip bad">' + fmt(b) + '</span>' : '—') + '</td><td><a class="btn sm sec" href="#/customer/' + c.id + '">فتح</a></td></tr>'; }).join('') +
+    (l.length ? '' : '<tr><td colspan="8" class="empty">لا يوجد عملاء</td></tr>') + '</table></div>';
+}
+function vCustomer(arg) {
+  const e = arg === 'new' ? null : custOf(+arg); if (arg !== 'new' && !e) { flash('err', 'العميل غير موجود'); return null; }
+  const hist = e ? DB.rentals.filter(r => r.customer_id === e.id).sort((a, b) => b.id - a.id) : [], debt = sum(hist, balance);
+  return '<h1>' + (e ? esc(e.name) : 'عميل جديد') + '</h1>' +
+    '<form class="card" data-form="customer"><input type="hidden" name="id" value="' + (e ? e.id : '') + '">' +
+    '<div class="photorow"><span id="pprev">' + avatar(e, true) + '</span><div><label class="btn sec sm" style="margin:0">التقاط / اختيار صورة<input type="file" accept="image/*" id="pf" style="display:none"></label>' + (e && PHOTOS[e.id] ? ' <button type="button" class="btn sm bad" data-act="rmphoto">حذف الصورة</button>' : '') + '</div></div>' +
+    '<div class="row c2"><div><label>اسم العميل</label><input name="name" required value="' + esc(e ? e.name : '') + '"></div><div><label>رقم الهاتف</label><input name="phone" inputmode="tel" value="' + esc(e ? e.phone : '') + '"></div></div>' +
+    '<label>العنوان</label><input name="address" value="' + esc(e ? e.address : '') + '">' +
+    '<div class="row c2"><div><label>الضامن / المعرِّف</label><input name="guarantor" value="' + esc(e ? e.guarantor : '') + '"></div><div><label>هاتف الضامن</label><input name="guarantor_phone" inputmode="tel" value="' + esc(e ? e.guarantor_phone : '') + '"></div></div>' +
+    '<label>ملاحظات</label><input name="notes" value="' + esc(e ? e.notes : '') + '"><br><button class="btn">' + (e ? 'حفظ التعديل' : 'إضافة العميل') + '</button> <a class="btn sec" href="#/customers">رجوع</a></form>' +
+    (e ? '<div class="stats"><div class="stat"><b>' + hist.length + '</b><span>عدد الإيجارات</span></div><div class="stat"><b>' + fmt(sum(hist.filter(r => r.status === 'finished'), r => r.total)) + '</b><span>إجمالي الإيجارات (' + CUR + ')</span></div><div class="stat ' + (debt > 0 ? 'bad' : '') + '"><b>' + fmt(debt) + '</b><span>المتبقي عليه</span></div></div>' +
+      (e.blocked ? '<div class="fl err">هذا العميل محظور من الإيجار' + (e.block_reason ? ': ' + esc(e.block_reason) : '') + (isAdmin() ? ' <button class="btn sm sec" data-act="unblock" data-id="' + e.id + '">رفع الحظر</button>' : ' — يرفع الحظر المدير فقط') + '</div>' : '<form class="card" data-form="block" data-id="' + e.id + '"><b>حظر العميل</b><div class="hint">يمنع النظام تأجيره حتى يرفع المدير الحظر.</div><label>السبب</label><input name="reason" maxlength="150" placeholder="مثال: لم يُرجع الدراجة / تلف / ..."><br><button class="btn bad sm">حظر العميل</button></form>') +
+      (debt > 0 ? '<form class="card" data-form="custpay" data-id="' + e.id + '"><b>سداد دين العميل</b><div class="hint">يُوزَّع على الأقدم أولاً</div><label>المبلغ</label><input name="amount" inputmode="decimal" value="' + debt + '"><br><button class="btn">تسجيل الدفعة</button></form>' : '') +
+      '<h2>سجل إيجاراته</h2><div class="tw"><table><tr><th>#</th><th>الدراجة</th><th>النظام</th><th>البدء</th><th>الوصول</th><th>التأخير</th><th>الإجمالي</th><th>المتبقي</th><th></th></tr>' +
+      hist.map(r => '<tr><td>' + r.id + '</td><td>' + esc(bikeLabel(bikeOf(r.bike_id))) + '</td><td>' + esc(planLabel(r)) + '</td><td>' + dtf(r.start) + '</td><td>' + dtf(r.arrival) + '</td><td>' + (r.delay_min ? durMin(r.delay_min) : '—') + '</td><td>' + (r.status === 'finished' ? fmt(r.total) : chip(r.status)) + '</td><td>' + (balance(r) ? fmt(balance(r)) : '—') + '</td><td><a class="btn sm sec" href="#/' + (r.status === 'active' ? 'end/' : 'receipt/') + r.id + '">فتح</a></td></tr>').join('') + (hist.length ? '' : '<tr><td colspan="9" class="empty">لا إيجارات</td></tr>') + '</table></div>' +
+      (isAdmin() ? '<button class="btn bad sm noprint" data-act="delcust" data-id="' + e.id + '">حذف العميل</button>' : '') : '');
+}
+
+function vContract(id) {
+  const r = rentalOf(+id); if (!r) { flash('err', 'الإيجار غير موجود'); return null; }
+  const c = custOf(r.customer_id) || {}, b = bikeOf(r.bike_id), fin = r.status === 'finished';
+  const phone = (TMP[r.id] && TMP[r.id].phone) || c.phone || '', est = r.qty > 0 ? (r.plan === 'flat' ? r.price : r.qty * r.price) : 0;
+  const kv = (k, v) => '<div class="kv"><span>' + k + '</span><b>' + v + '</b></div>';
+  return '<div class="contract card" style="max-width:720px;margin:auto"><h1>' + esc(DB.settings.shop_name) + '</h1><div style="text-align:center;color:var(--muted)">' + esc(DB.settings.shop_phone) + '</div>' +
+    '<h2 style="text-align:center;margin:14px 0">عقد إيجار دراجة نارية</h2>' +
+    kv('رقم العقد', '#' + r.id) + kv('تاريخ التحرير', dtf(r.start)) +
+    '<h2>بيانات المستأجر</h2>' + kv('الاسم', esc(cname(r))) + kv('الهاتف', esc(phone || '—')) + kv('العنوان', esc(c.address || '—')) +
+    kv('الضامن / المعرِّف', esc((c.guarantor || '—') + (c.guarantor_phone ? ' — ' + c.guarantor_phone : ''))) +
+    '<h2>بيانات الدراجة</h2>' + kv('الدراجة', esc(b ? b.name : 'دراجة محذوفة')) + kv('المقاس', esc((b && b.size) || '—')) + kv('الرقم التسلسلي', esc((b && b.serial) || '—')) +
+    '<h2>شروط الإيجار</h2>' + kv('نظام الأجرة', esc(planDesc(r)) + ' ' + CUR) +
+    kv('توقيت البدء', dtf(r.start)) + kv('توقيت الانتهاء المتفق عليه', r.planned_end ? dtf(r.planned_end) : 'مفتوح — بحسب الوقت الفعلي') +
+    (est ? kv('الأجرة المتفق عليها', fmt(est) + ' ' + CUR) : '') + kv('العربون المستلم', fmt(r.deposit) + ' ' + CUR) + (r.deposit_note ? kv('ضمان آخر', esc(r.deposit_note)) : '') +
+    (fin ? kv('توقيت الوصول', dtf(r.arrival)) + kv('الإجمالي النهائي', fmt(r.total) + ' ' + CUR) + kv('المدفوع', fmt(r.paid + Math.min(r.deposit, r.total)) + ' ' + CUR) : '') +
+    (r.notes ? kv('ملاحظات', esc(r.notes)) : '') +
+    '<h2>الشروط والأحكام</h2><div class="terms">' + esc(DB.settings.contract_terms || TERMS).replace(/\n/g, '<br>') + '</div>' +
+    '<div class="sign"><div>توقيع المستأجر</div><div>توقيع الضامن</div><div>توقيع المحل</div></div></div>' +
+    '<div class="noprint acts" style="max-width:720px;margin:12px auto"><button class="btn" data-act="print">طباعة / PDF</button><a class="btn sec" href="#/dashboard">الرئيسية</a></div>';
+}
+
+function vTypes(q) {
+  const e = DB.types.find(t => t.id === +q.get('edit'));
+  return '<h1>أنواع الدراجات وأسعارها</h1><form class="card" data-form="type"><input type="hidden" name="id" value="' + (e ? e.id : '') + '"><b>' + (e ? 'تعديل نوع' : 'إضافة نوع') + '</b>' +
+    '<div class="row c3"><div><label>اسم النوع (عادية 125 / رياضية / سكوتر...)</label><input name="name" required value="' + esc(e ? e.name : '') + '"></div><div><label>سعر الساعة (' + CUR + ')</label><input name="rate" inputmode="decimal" value="' + (e ? e.rate : DB.settings.default_rate) + '"></div><div><label>سعر الاشتراك الشهري</label><input name="month_price" inputmode="decimal" value="' + (e && e.month_price ? e.month_price : '') + '"></div></div>' +
+    '<div class="row c2"><div><label>سعر 15 دقيقة (اختياري)</label><input name="rate15" inputmode="decimal" value="' + (e && e.rate15 ? e.rate15 : '') + '"></div><div><label>سعر 30 دقيقة (اختياري)</label><input name="rate30" inputmode="decimal" value="' + (e && e.rate30 ? e.rate30 : '') + '"></div></div><div class="row c2"><div><label>سعر اليوم (اختياري)</label><input name="rate_day" inputmode="decimal" value="' + (e && e.rate_day ? e.rate_day : '') + '"></div><div><label>سعر الأسبوع (اختياري)</label><input name="rate_week" inputmode="decimal" value="' + (e && e.rate_week ? e.rate_week : '') + '"></div></div><div class="hint">اترك 15 و30 دقيقة فارغين ليُحسبا من سعر الساعة (ربع ونصف).</div>' +
+    '<label>ملاحظات</label><input name="notes" value="' + esc(e ? e.notes : '') + '">' +
+    (e ? '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="apply"> طبّق السعر الجديد على كل دراجات هذا النوع (' + DB.bikes.filter(b => b.type_id === e.id).length + ')</label>' : '') +
+    '<div class="hint">عند اختيار النوع في نموذج الدراجة يُعبَّأ سعرها تلقائياً، ويمكنك تخصيص سعر دراجة بعينها. الإيجارات الجارية لا تتأثر بتعديل الأسعار.</div><br><button class="btn">' + (e ? 'حفظ' : 'إضافة النوع') + '</button> ' + (e ? '<a class="btn sec" href="#/types">إلغاء</a>' : '') + '</form>' +
+    '<div class="tw"><table><tr><th>النوع</th><th>15 د</th><th>30 د</th><th>الساعة</th><th>اليوم</th><th>الأسبوع</th><th>الشهري</th><th>عدد الدراجات</th><th></th></tr>' +
+    DB.types.map(t => '<tr><td>' + esc(t.name) + '</td><td>' + (t.rate15 ? fmt(t.rate15) : '—') + '</td><td>' + (t.rate30 ? fmt(t.rate30) : '—') + '</td><td>' + fmt(t.rate) + '</td><td>' + (t.rate_day ? fmt(t.rate_day) : '—') + '</td><td>' + (t.rate_week ? fmt(t.rate_week) : '—') + '</td><td>' + (t.month_price ? fmt(t.month_price) : '—') + '</td><td>' + DB.bikes.filter(b => b.type_id === t.id && b.status !== 'sold').length + '</td><td><div class="acts"><a class="btn sm sec" href="#/types?edit=' + t.id + '">تعديل</a><button class="btn sm bad" data-act="typedel" data-id="' + t.id + '">حذف</button></div></td></tr>').join('') +
+    (DB.types.length ? '' : '<tr><td colspan="9" class="empty">لا توجد أنواع بعد</td></tr>') + '</table></div>';
+}
+
+function vUsers() {
+  const me = curUser();
+  return '<h1>المستخدمون والصلاحيات</h1>' + (hasUsers() ? '' : '<div class="fl warn">لا يوجد قفل بعد. أنشئ حساب المدير أدناه لتفعيل تسجيل الدخول بالرقم السري.</div>') +
+    '<form class="card" data-form="user"><b>' + (hasUsers() ? 'إضافة مستخدم' : 'إنشاء حساب المدير') + '</b><div class="row c3"><div><label>الاسم</label><input name="name" required></div><div><label>الرقم السري (4 أرقام فأكثر)</label><input name="pin" type="password" inputmode="numeric" required></div>' +
+    (hasUsers() ? '<div><label>الصلاحية</label><select name="role"><option value="staff">موظف</option><option value="admin">مدير</option></select></div>' : '') + '</div><br><button class="btn">' + (hasUsers() ? 'إضافة' : 'إنشاء وتفعيل القفل') + '</button></form>' +
+    '<div class="tw"><table><tr><th>الاسم</th><th>الصلاحية</th><th>الحالة</th><th></th></tr>' +
+    DB.users.map(u => '<tr><td>' + esc(u.name) + (me && me.id === u.id ? ' <span class="chip">أنت</span>' : '') + '</td><td>' + (u.role === 'admin' ? '<span class="chip ok">مدير</span>' : '<span class="chip">موظف</span>') + '</td><td>' + (u.active ? '<span class="chip ok">مفعّل</span>' : '<span class="chip bad">موقوف</span>') + '</td>' +
+      '<td><div class="acts"><button class="btn sm sec" data-act="userpin" data-id="' + u.id + '">رقم سري جديد</button><button class="btn sm sec" data-act="userrole" data-id="' + u.id + '">' + (u.role === 'admin' ? 'اجعله موظفاً' : 'اجعله مديراً') + '</button><button class="btn sm sec" data-act="usertoggle" data-id="' + u.id + '">' + (u.active ? 'إيقاف' : 'تفعيل') + '</button><button class="btn sm bad" data-act="userdel" data-id="' + u.id + '">حذف</button></div></td></tr>').join('') +
+    (DB.users.length ? '' : '<tr><td colspan="4" class="empty">لا يوجد مستخدمون</td></tr>') + '</table></div>' +
+    '<div class="card"><b>صلاحيات الموظف</b><div class="hint">يستطيع: التأجير والاستلام، العملاء (إضافة وتعديل وحظر)، الصيانة (إضافة وإكمال)، عرض الدراجات. لا يستطيع: التدقيق المالي، الإعدادات، النسخ الاحتياطي، شراء/بيع/حذف الدراجات، حذف العملاء أو الصيانة، إلغاء الإيجار، رفع الحظر، سجل النشاط، المستخدمين.</div>' +
+    '<div class="hint">نسيان رقم المدير لا يمكن استرجاعه: الحل أن تمسح بيانات الموقع ثم تسترجع آخر نسخة احتياطية.</div></div>';
+}
+
+function vActivity(q) {
+  const u = q.get('u') || '', t = (q.get('q') || '').trim(), users = [...new Set(DB.log.map(x => x.user))];
+  let l = [...DB.log].reverse(); if (u) l = l.filter(x => x.user === u); if (t) l = l.filter(x => (x.action + ' ' + x.details).includes(t));
+  return '<h1>سجل النشاط</h1><form class="filters" data-form="filter" data-page="activity"><select name="u"><option value="">كل المستخدمين</option>' + users.map(n => '<option' + (n === u ? ' selected' : '') + '>' + esc(n) + '</option>').join('') + '</select><input name="q" value="' + esc(t) + '" placeholder="بحث في العمليات"><button class="btn" style="grid-column:1/-1">تصفية</button></form>' +
+    '<div class="tw"><table><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>' + l.slice(0, 300).map(x => '<tr><td>' + dtf(x.at) + '</td><td>' + esc(x.user) + '</td><td>' + esc(x.action) + '</td><td style="white-space:normal">' + esc(x.details) + '</td></tr>').join('') +
+    (l.length ? '' : '<tr><td colspan="4" class="empty">لا توجد عمليات</td></tr>') + '</table></div>' + (l.length > 300 ? '<div class="hint">يظهر أحدث 300 من ' + l.length + '</div>' : '');
+}
+
+function invoiceNo(m) { return 'M' + String(m.id).padStart(4, '0'); }
+function invoiceText(m) {
+  const b = bikeOf(m.bike_id);
+  return [DB.settings.shop_name, 'فاتورة صيانة ' + invoiceNo(m), 'التاريخ: ' + dtf(m.date).slice(0, 10), m.owner ? 'العميل: ' + m.owner : '', 'الدراجة: ' + bikeLabel(b), '']
+    .concat(m.parts.map(p => '- ' + p.name + ': ' + fmt(p.cost)), m.labor ? ['- أجرة العمل: ' + fmt(m.labor)] : [], ['الإجمالي: ' + fmt(m.total) + ' ' + CUR, DB.settings.footer]).filter(x => x !== '').join('\n');
+}
+function vInvoice(id) {
+  const m = DB.maint.find(x => x.id === +id); if (!m) { flash('err', 'سجل الصيانة غير موجود'); return null; }
+  const b = bikeOf(m.bike_id), kv = (k, v) => '<div class="kv"><span>' + k + '</span><b>' + v + '</b></div>';
+  return '<div class="receipt card" style="max-width:560px"><h1 style="text-align:center;margin-bottom:2px">' + esc(DB.settings.shop_name) + '</h1><div style="text-align:center;color:var(--muted)">' + esc(DB.settings.shop_phone) + '</div>' +
+    '<h2 style="text-align:center;margin:12px 0">فاتورة صيانة وإصلاح</h2>' +
+    '<div class="photorow" style="justify-content:center">' + bikeAvatar(b, true) + '</div>' +
+    kv('رقم الفاتورة', invoiceNo(m)) + kv('تاريخ الإصلاح', dtf(m.status === 'done' && m.done_at ? m.done_at : m.date).slice(0, 10)) + kv('الحالة', m.status === 'open' ? 'قيد الصيانة' : 'تم الإصلاح') +
+    (m.owner ? kv('العميل / المالك', esc(m.owner)) : '') + kv('الدراجة', esc(bikeLabel(b))) + (b && b.size ? kv('المقاس', esc(b.size)) : '') +
+    '<div class="tw" style="margin:12px 0 4px"><table style="min-width:0"><tr><th>القطعة / العملية</th><th>التكلفة (' + CUR + ')</th></tr>' + m.parts.map(p => '<tr><td>' + esc(p.name) + '</td><td>' + fmt(p.cost) + '</td></tr>').join('') +
+    (m.labor ? '<tr><td>أجرة العمل</td><td>' + fmt(m.labor) + '</td></tr>' : '') + '<tr><th>الإجمالي</th><th>' + fmt(m.total) + ' ' + CUR + '</th></tr></table></div>' +
+    (m.notes ? kv('ملاحظات', esc(m.notes)) : '') + (m.by ? kv('الفني / المسجِّل', esc(m.by)) : '') +
+    '<p style="text-align:center;color:var(--muted)">' + esc(DB.settings.footer) + '</p><div class="sign" style="grid-template-columns:repeat(2,1fr)"><div>توقيع الفني</div><div>توقيع المستلم</div></div></div>' +
+    '<div class="receipt noprint acts"><button class="btn" data-act="print">طباعة / PDF</button><button class="btn sec" data-act="shareinv" data-id="' + m.id + '">مشاركة نصية</button><a class="btn sec" href="#/maint">الصيانة</a></div>';
+}
+function partNames() {
+  const base = ['إطار (كفر)', 'سلسلة', 'بريك (فرامل)', 'زيت محرك', 'بطارية', 'فلتر', 'شمعة إشعال', 'مصباح', 'مرآة', 'سلك قابض', 'عجلة', 'مقود', 'تيل فرامل'];
+  const used = DB.maint.flatMap(m => m.parts.map(p => p.name)); return [...new Set([...base, ...used])];
+}
+function vMaint() {
+  const bikes = DB.bikes.filter(b => b.status !== 'sold' && !isRented(b.id)), open = DB.maint.filter(m => m.status === 'open').sort((a, b) => b.id - a.id), done = DB.maint.filter(m => m.status === 'done').sort((a, b) => b.id - a.id);
+  const card = m => { const b = bikeOf(m.bike_id); return '<div class="card"><div class="top2" style="display:flex;justify-content:space-between"><b>' + esc(bikeLabel(b)) + '</b>' + chip(m.status) + '</div><div class="hint">' + dtf(m.date).slice(0, 10) + (m.notes ? ' · ' + esc(m.notes) : '') + '</div>' +
+    '<div class="tw" style="margin:8px 0"><table style="min-width:0"><tr><th>القطعة / العملية</th><th>التكلفة</th></tr>' + m.parts.map(p => '<tr><td>' + esc(p.name) + '</td><td>' + fmt(p.cost) + '</td></tr>').join('') + (m.labor ? '<tr><td>أجرة العمل</td><td>' + fmt(m.labor) + '</td></tr>' : '') + '<tr><th>الإجمالي</th><th>' + fmt(m.total) + ' ' + CUR + '</th></tr></table></div>' +
+    (m.status === 'open' ? '<form data-form="addpart" data-id="' + m.id + '" class="prow"><input name="name" list="pn" placeholder="قطعة إضافية"><input name="cost" inputmode="decimal" placeholder="التكلفة"><button class="btn sm">إضافة</button></form><div class="acts"><button class="btn sm" data-act="mdone" data-id="' + m.id + '">تمت الصيانة، أعد الدراجة للخدمة</button>' : '<div class="acts">') +
+    '<a class="btn sm sec" href="#/invoice/' + m.id + '">فاتورة</a><button class="btn sm bad" data-act="mdel" data-id="' + m.id + '">حذف</button></div></div>'; };
+  return '<h1>الصيانة وقطع الغيار</h1><datalist id="pn">' + partNames().map(n => '<option value="' + esc(n) + '">').join('') + '</datalist>' +
+    '<form class="card" data-form="maint"><b>تسجيل صيانة</b><div class="row c2"><div><label>الدراجة</label><select name="bike_id" required>' + bikes.map(b => '<option value="' + b.id + '">' + esc(bikeLabel(b)) + '</option>').join('') + '</select></div><div><label>التاريخ</label><input type="date" name="date" value="' + dayKey(Date.now()) + '"></div></div>' +
+    '<label>القطع المستبدلة وتكلفتها</label><div id="parts"></div><button type="button" class="btn sec sm" data-act="addrow">+ إضافة قطعة</button>' +
+    '<div class="row c2"><div><label>أجرة العمل / الورشة (اختياري)</label><input name="labor" inputmode="decimal" value="0"></div><div><label>ملاحظات</label><input name="notes"></div></div>' +
+    '<label>صاحب الدراجة (اختياري — إن كانت من خارج المحل)</label><input name="owner" maxlength="80">' +
+    '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="in_shop"> الدراجة ما زالت في الصيانة (أخرجها من الخدمة)</label><div class="hint">إن كتبت اسم صاحب الدراجة (من خارج المحل) تُحسب الفاتورة إيراداً يدخل الصندوق، وإلا تُحسب تكلفة صيانة تُخصم من الصندوق.</div><br><button class="btn" ' + (bikes.length ? '' : 'disabled') + '>حفظ الصيانة</button></form>' +
+    (open.length ? '<h2>قيد الصيانة الآن</h2>' + open.map(card).join('') : '') + '<h2>سجل الصيانة</h2>' + (done.map(card).join('') || '<div class="card empty">لا توجد صيانة مسجلة</div>');
+}
+function addPartRow() { const d = document.createElement('div'); d.className = 'prow'; d.innerHTML = '<input name="part_name" list="pn" placeholder="مثال: إطار"><input name="part_cost" inputmode="decimal" placeholder="التكلفة"><button type="button" class="btn sm bad">×</button>'; d.querySelector('button').onclick = () => d.remove(); $('#parts').appendChild(d); }
+
+function vFinance(q) {
+  const first = (() => { const n = new Date(); return n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-01'; })();
+  const from = q.get('from') || first, to = q.get('to') || dayKey(Date.now()), inP = ts => ts && dayKey(ts) >= from && dayKey(ts) <= to;
+  const fin = DB.rentals.filter(r => r.status === 'finished' && inP(r.arrival)), rev = sum(fin, r => r.total), delayRev = sum(fin, r => r.delay_cost);
+  const cp = DB.cash.filter(e => inP(e.at)), exp = -sum(cp.filter(e => e.type === 'expense'), e => e.amount), mnt = -sum(cp.filter(e => e.type === 'maint'), e => e.amount), repRev = sum(cp.filter(e => e.type === 'repair_rev'), e => e.amount);
+  const soldP = DB.bikes.filter(b => b.status === 'sold' && inP(b.sold_at)), gain = sum(soldP, b => b.sold_price - b.buy_price), net = rev + repRev - exp - mnt + gain, pct = (rev + repRev) > 0 ? net / (rev + repRev) * 100 : null;
+  const inn = sum(cp.filter(e => e.amount > 0), e => e.amount), out = -sum(cp.filter(e => e.amount < 0), e => e.amount), bal = cashBalance();
+  const debts = sum(DB.rentals, balance), held = sum(DB.rentals.filter(r => r.status === 'active'), r => r.deposit);
+  const byCat = {}; cp.filter(e => e.type === 'expense').forEach(e => { byCat[e.cat || 'أخرى'] = (byCat[e.cat || 'أخرى'] || 0) - e.amount; });
+  const maintBike = bid => -sum(DB.cash.filter(e => e.type === 'maint' && (DB.maint.find(m => m.id === e.ref) || {}).bike_id === bid), e => e.amount);
+  const maintBikeP = bid => -sum(cp.filter(e => e.type === 'maint' && (DB.maint.find(m => m.id === e.ref) || {}).bike_id === bid), e => e.amount);
+  const perBike = DB.bikes.map(b => { const rp = sum(fin.filter(r => r.bike_id === b.id), r => r.total), mp = maintBikeP(b.id), life = sum(DB.rentals.filter(r => r.bike_id === b.id && r.status === 'finished'), r => r.total) - maintBike(b.id);
+    return {b, rp, mp, hours: sum(fin.filter(r => r.bike_id === b.id), r => (r.arrival - r.start) / 36e5), net: rp - mp, back: b.buy_price > 0 ? life / b.buy_price * 100 : null}; }).filter(x => x.rp || x.mp || x.b.status !== 'sold');
+  const ft = q.get('t') || '', led = [...DB.cash].filter(e => !ft || e.type === ft).sort((a, b) => b.at - a.at || b.id - a.id).slice(0, 120);
+  const manual = ['expense', 'owner_in', 'owner_out'];
+  const label = e => { const r = e.ref; if (['adv', 'rental_pay', 'debt', 'refund'].includes(e.type)) return '<a href="#/receipt/' + r + '">إيجار #' + r + '</a>'; return esc(e.cat ? e.cat + (e.note ? ' — ' + e.note : '') : e.note); };
+  return '<h1>التدقيق المالي</h1><form class="filters" data-form="filter" data-page="finance"><input type="date" name="from" value="' + from + '"><input type="date" name="to" value="' + to + '"><button class="btn" style="grid-column:1/-1">عرض الفترة</button></form>' +
+    '<div class="stats"><div class="stat ' + (bal >= 0 ? 'ok' : 'bad') + '"><b>' + fmt(bal) + '</b><span>رصيد الصندوق الآن (' + CUR + ')</span></div><div class="stat"><b>' + fmt(inn) + '</b><span>داخل للصندوق في الفترة</span></div><div class="stat warn"><b>' + fmt(out) + '</b><span>خارج من الصندوق في الفترة</span></div><div class="stat"><b>' + fmt(held) + '</b><span>عربونات محتجزة</span></div></div>' +
+    '<div class="card"><b>الأرباح والخسائر (' + from + ' إلى ' + to + ')</b>' +
+    '<div class="kv"><span>إيرادات الإيجار (' + fin.length + ' إيجار)</span><b>' + fmt(rev) + '</b></div>' + (delayRev ? '<div class="kv"><span>منها تكلفة تأخير</span><b>' + fmt(delayRev) + '</b></div>' : '') +
+    (repRev ? '<div class="kv"><span>+ إيراد إصلاح دراجات الغير</span><b>' + fmt(repRev) + '</b></div>' : '') + '<div class="kv"><span>− المصروفات</span><b>' + fmt(exp) + '</b></div><div class="kv"><span>− الصيانة</span><b>' + fmt(mnt) + '</b></div>' +
+    '<div class="kv"><span>+ ربح (خسارة) بيع الدراجات (' + soldP.length + ')</span><b class="' + (gain >= 0 ? 'pos' : 'neg') + '">' + fmt(gain) + '</b></div>' +
+    '<div class="kv"><span>= صافي الربح</span><b class="big ' + (net >= 0 ? 'pos' : 'neg') + '">' + fmt(net) + ' ' + CUR + '</b></div>' +
+    '<div class="kv"><span>نسبة الأرباح من الإيرادات</span><b class="big">' + (pct === null ? '—' : pct.toFixed(1) + '%') + '</b></div>' +
+    '<div class="hint">النسبة = صافي الربح ÷ (إيرادات الإيجار + إيراد الإصلاح). الإيراد محسوب بتاريخ الاستلام ويشمل المستحق غير المحصَّل. شراء الدراجات استثمار: يخصم من الصندوق ولا يدخل في الربح. الديون على العملاء حالياً: ' + fmt(debts) + ' ' + CUR + '.</div></div>' +
+    (Object.keys(byCat).length ? '<h2>المصروفات حسب النوع</h2><div class="tw"><table style="min-width:0"><tr><th>النوع</th><th>المبلغ</th></tr>' + Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([k, v]) => '<tr><td>' + esc(k) + '</td><td>' + fmt(v) + '</td></tr>').join('') + '</table></div>' : '') +
+    '<h2>ربحية كل دراجة</h2><div class="tw"><table><tr><th>الدراجة</th><th>ساعات الفترة</th><th>إيراد الفترة</th><th>صيانة الفترة</th><th>الصافي</th><th>المسترد من ثمن الشراء</th></tr>' +
+    perBike.map(x => '<tr><td>' + esc(bikeLabel(x.b)) + (x.b.status === 'sold' ? ' ' + chip('sold') : '') + '</td><td>' + x.hours.toFixed(1) + '</td><td>' + fmt(x.rp) + '</td><td>' + fmt(x.mp) + '</td><td class="' + (x.net >= 0 ? 'pos' : 'neg') + '">' + fmt(x.net) + '</td><td>' + (x.back === null ? '—' : x.back.toFixed(0) + '%') + '</td></tr>').join('') + (perBike.length ? '' : '<tr><td colspan="6" class="empty">لا بيانات</td></tr>') + '</table></div>' +
+    '<h2>تسجيل مصروف</h2><datalist id="ec"><option value="إيجار المحل"><option value="رواتب"><option value="كهرباء"><option value="مواصلات"><option value="وقود"><option value="أخرى"></datalist>' +
+    '<form class="card" data-form="expense"><div class="row c3"><div><label>النوع</label><input name="cat" list="ec" required></div><div><label>المبلغ (' + CUR + ')</label><input name="amount" inputmode="decimal" required></div><div><label>التاريخ</label><input type="date" name="date" value="' + dayKey(Date.now()) + '"></div></div><label>ملاحظة</label><input name="note"><br><button class="btn">تسجيل المصروف</button></form>' +
+    '<form class="card" data-form="owner"><b>حركة المالك على الصندوق</b><div class="row c3"><div><label>النوع</label><select name="kind"><option value="owner_in">إيداع من المالك</option><option value="owner_out">سحب المالك</option></select></div><div><label>المبلغ</label><input name="amount" inputmode="decimal" required></div><div><label>ملاحظة</label><input name="note"></div></div><br><button class="btn sec">تسجيل</button></form>' +
+    '<h2>سجل الصندوق</h2><form class="filters" data-form="filter" data-page="finance" style="grid-template-columns:1fr auto"><input type="hidden" name="from" value="' + from + '"><input type="hidden" name="to" value="' + to + '"><select name="t"><option value="">كل الحركات</option>' + Object.entries(CASH).map(([k, v]) => '<option value="' + k + '"' + (ft === k ? ' selected' : '') + '>' + v[0] + '</option>').join('') + '</select><button class="btn">تصفية</button></form>' +
+    '<div class="tw"><table><tr><th>التاريخ</th><th>النوع</th><th>التفاصيل</th><th>المبلغ</th><th></th></tr>' + (+DB.settings.opening_cash ? '<tr><td>—</td><td>رصيد افتتاحي</td><td></td><td>' + fmt(DB.settings.opening_cash) + '</td><td></td></tr>' : '') +
+    led.map(e => '<tr><td>' + dtf(e.at) + '</td><td>' + CASH[e.type][0] + '</td><td>' + label(e) + '</td><td class="' + (e.amount >= 0 ? 'pos' : 'neg') + '">' + (e.amount >= 0 ? '+' : '−') + fmt(Math.abs(e.amount)) + '</td><td>' + (manual.includes(e.type) ? '<button class="btn sm bad" data-act="delcash" data-id="' + e.id + '">حذف</button>' : '') + '</td></tr>').join('') + (led.length ? '' : '<tr><td colspan="5" class="empty">لا حركات</td></tr>') + '</table></div>' +
+    '<p class="noprint acts"><button class="btn sec sm" data-act="csvled">تنزيل سجل الصندوق CSV</button><button class="btn sec sm" data-act="csvrent" data-from="' + from + '" data-to="' + to + '">تنزيل إيجارات الفترة CSV</button></p>';
+}
+
+function vSettings() {
+  const s = DB.settings, last = s.last_backup ? dtf(s.last_backup) : 'لم تُنزَّل بعد';
+  return '<h1>الإعدادات والنسخ الاحتياطي</h1>' +
+    '<div class="card"><b>النسخة الاحتياطية</b><div class="hint">بياناتك وصور العملاء محفوظة على هذا الجوال فقط. إن مُسح المتصفح أو ضاع الجوال تضيع، فنزّل نسخة بانتظام وأرسلها لنفسك على واتساب أو Google Drive.</div>' +
+    '<div class="kv"><span>آخر نسخة</span><b>' + last + '</b></div><br><div class="acts"><button class="btn" data-act="share">مشاركة / إرسال نسخة</button><button class="btn sec" data-act="dl">تنزيل نسخة</button><label class="btn sec" style="margin:0">استرجاع نسخة<input type="file" accept=".json,application/json" id="rf" style="display:none"></label></div></div>' +
+    '<form class="card" data-form="sync"><b>النسخ التلقائي على الاستضافة (InfinityFree)</b><div class="hint">يرفع التطبيق نسخة من البيانات وصور العملاء إلى استضافتك كلما توفر الإنترنت، فلا تضيع إن ضاع الجوال. الاتجاه واحد (من الجوال إلى الاستضافة).</div>' +
+    '<label>رابط ملف الاستقبال</label><input name="sync_url" dir="ltr" inputmode="url" placeholder="https://yahya90.site.je/bike_backup/backup.php" value="' + esc(s.sync_url) + '">' +
+    '<label>المفتاح السري (نفسه الموجود في ملف backup.php)</label><input name="sync_key" type="password" dir="ltr" autocomplete="off" value="' + esc(s.sync_key) + '">' +
+    '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="sync_auto"' + (s.sync_auto ? ' checked' : '') + '> رفع تلقائي عند توفر الإنترنت وبعد كل تغيير</label>' +
+    '<div class="kv"><span>الحالة</span><b id="syncst">' + (s.last_sync ? 'آخر رفع: ' + dtf(s.last_sync) : 'لم يُرفع بعد') + '</b></div>' + (s.sync_err ? '<div class="fl err">آخر خطأ: ' + esc(s.sync_err) + '</div>' : '') +
+    '<br><div class="acts"><button class="btn">حفظ الإعداد</button><button type="button" class="btn sec" data-act="syncping">اختبار الاتصال</button><button type="button" class="btn sec" data-act="syncnow">رفع نسخة الآن</button><button type="button" class="btn sec" data-act="syncpull">استرجاع من الاستضافة</button></div></form>' +
+    '<form class="card" data-form="settings"><b>بيانات المحل</b><div class="row c2"><div><label>اسم المحل</label><input name="shop_name" value="' + esc(s.shop_name) + '"></div><div><label>هاتف المحل</label><input name="shop_phone" value="' + esc(s.shop_phone) + '"></div></div>' +
+    '<label>عبارة أسفل الإيصال</label><input name="footer" value="' + esc(s.footer) + '"><div class="row c2"><div><label>سعر الساعة الافتراضي (' + CUR + ')</label><input name="default_rate" inputmode="decimal" value="' + s.default_rate + '"></div><div><label>الرصيد الافتتاحي للصندوق (' + CUR + ')</label><input name="opening_cash" inputmode="decimal" value="' + s.opening_cash + '"><div class="hint">المبلغ الموجود في الصندوق عند بدء استخدام النظام</div></div></div>' +
+    '<h2>احتساب الوقت والتأخير</h2><div class="row c2"><div><label>دقائق السماح</label><input name="grace" inputmode="numeric" value="' + s.grace + '"><div class="hint">لا تُحسب وحدة جديدة ولا تأخير إن كان الزائد أقل من هذه الدقائق.</div></div>' +
+    '<div><label>زيادة التأخير (%)</label><input name="late_pct" inputmode="decimal" value="' + s.late_pct + '"><div class="hint">0 = التأخير بنفس سعر الوحدة. 50 = أغلى بنسبة 50%.</div></div>' +
+    '<div><label>تقريب المبلغ لأقرب (' + CUR + ')</label><input name="round_to" inputmode="numeric" value="' + s.round_to + '"></div>' +
+    '<div><label>الإرجاع قبل الموعد</label><select name="early_mode"><option value="actual"' + (s.early_mode === 'actual' ? ' selected' : '') + '>احتساب الوقت الفعلي</option><option value="agreed"' + (s.early_mode === 'agreed' ? ' selected' : '') + '>احتساب المدة المتفق عليها كاملة</option></select></div></div>' +
+    '<h2>خصوصية العملاء</h2><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="auto_delete"' + (s.auto_delete ? ' checked' : '') + '> حذف بيانات العميل عند إنهاء إيجاره (مفعّل في صفحة الاستلام)</label><div class="hint">مطفأ افتراضياً لأن النظام يحتفظ بسجل العملاء.</div>' +
+    '<h2>شروط عقد الإيجار</h2><textarea name="contract_terms" rows="7">' + esc(s.contract_terms || TERMS) + '</textarea><div class="hint">تُطبع في عقد الإيجار، كل سطر بند.</div>' +
+    '<br><button class="btn">حفظ الإعدادات</button></form>' +
+    '<div class="card"><b>تنظيف العملاء</b><div class="hint">يحذف كل عميل أكمل إيجاره ولا عليه متبقٍ ولا إيجار جارٍ. الإيجارات تبقى في التقارير ويظهر اسمه "عميل محذوف". لا يمكن التراجع، فنزّل نسخة احتياطية قبله.</div><br><button class="btn bad sm" data-act="purge">حذف العملاء المنتهية إيجاراتهم</button></div>' +
+    '<div class="card"><b>تجربة الحساب</b><div class="hint">ساعة واحدة و20 دقيقة بنظام الساعة وسعر 300 = <b>' + fmt(calcRental({plan: 'h60', unit_min: 60, price: 300, qty: 0, start: 0, planned_end: 0}, 4800 * 1000).total) + '</b> ' + CUR + ' (حسب الإعدادات المحفوظة)</div></div>' +
+    '<div class="card"><b>القفل والمستخدمون</b><div class="hint">القفل بالرقم السري والحسابات المتعددة (مدير وموظف) من صفحة <a href="#/users">المستخدمون</a>.</div></div>' +
+    '<div class="card"><b>التثبيت على الجوال</b><div class="hint">افتح رابط التطبيق مرة واحدة والنت شغّال، ثم "إضافة إلى الشاشة الرئيسية" من قائمة المتصفح. بعدها يعمل بدون إنترنت.</div><div id="installbox"></div></div>' +
+    '<div class="card"><b>حذف كل البيانات</b><div class="hint">يمسح كل شيء نهائياً من هذا الجوال.</div><br><button class="btn bad sm" data-act="wipe">حذف كل شيء</button></div>';
+}
+function vMore() {
+  const it = (h, t) => '<a class="item" href="#/' + h + '"><span>' + t + '</span><span>›</span></a>';
+  return '<h1>المزيد</h1><div class="list">' + it('customers', 'سجل حساب العملاء') + it('maint', 'الصيانة وقطع الغيار') +
+    (isAdmin() ? it('finance', 'التدقيق المالي والصندوق') + it('types', 'أنواع الدراجات وأسعارها') + it('activity', 'سجل النشاط') + it('users', 'المستخدمون والصلاحيات') + it('settings', 'الإعدادات والنسخ الاحتياطي') : '') + '</div>';
+}
+
+/* ====================== العرض الرئيسي ====================== */
+function shell(inner, name) {
+  const tabs = [['dashboard', '⌂', 'الرئيسية'], ['rentals', '☰', 'الإيجارات'], ['rent', '+', 'تأجير'], ['bikes', '⚙', 'الدراجات'], ['more', '⋯', 'المزيد']];
+  const grp = {customers: 'more', customer: 'more', types: 'more', users: 'more', invoice: 'more', activity: 'more', contract: 'rentals', maint: 'more', finance: 'more', settings: 'more', end: 'dashboard', receipt: 'rentals', sell: 'bikes'}, cur = grp[name] || name;
+  const nav = '<nav class="tabs noprint">' + tabs.map(t => '<a href="#/' + t[0] + '" class="' + (cur === t[0] ? 'on ' : '') + (t[0] === 'rent' ? 'plus' : '') + '"><b>' + t[1] + '</b>' + t[2] + '</a>').join('') + '</nav>';
+  return '<header class="hd noprint"><div class="top"><span>' + esc(DB.settings.shop_name) + '</span><small>' + (navigator.onLine ? '' : 'بدون إنترنت ✓ ') + (hasUsers() && curUser() ? esc(curUser().name) + ' · ' + (curUser().role === 'admin' ? 'مدير' : 'موظف') + '<button class="btn sec" data-act="logout">خروج</button>' : '') + '</small></div>' + nav + '</header><main>' + (FLASH ? '<div class="fl ' + FLASH[0] + '">' + esc(FLASH[1]) + '</div>' : '') + inner + '</main>';
+}
+function render() {
+  if (!READY) return; const app = $('#app');
+  if (locked()) {
+    app.innerHTML = '<div class="lock card"><h1>' + esc(DB.settings.shop_name) + '</h1><form data-form="unlock"><label>المستخدم</label><select name="uid">' + DB.users.filter(u => u.active).map(u => '<option value="' + u.id + '">' + esc(u.name) + '</option>').join('') + '</select><label>الرقم السري</label><input name="pin" type="password" inputmode="numeric" autofocus><br><button class="btn block">دخول</button></form></div>'; return;
+  }
+  const r = route(); let inner = null;
+  if (!isAdmin() && ['finance', 'settings', 'users', 'activity', 'types', 'sell'].includes(r.name)) { const f = FLASH; flash('err', 'هذه الصفحة للمدير فقط.'); if (!f) { location.hash = '#/dashboard'; return; } }
+  switch (r.name) {
+    case 'invoice': inner = vInvoice(r.arg); if (inner === null) { location.hash = '#/maint'; return; } break;
+    case 'contract': inner = vContract(r.arg); if (inner === null) { location.hash = '#/rentals'; return; } break;
+    case 'types': inner = vTypes(r.q); break;
+    case 'users': inner = vUsers(); break;
+    case 'activity': inner = vActivity(r.q); break;
+    case 'dashboard': inner = vDashboard(); break;
+    case 'rent': inner = vRent(r.q); break;
+    case 'end': inner = vEnd(r.arg); if (inner === null) { const f = FLASH; location.hash = '#/dashboard'; FLASH = f; return; } break;
+    case 'receipt': inner = vReceipt(r.arg); if (inner === null) { location.hash = '#/rentals'; return; } break;
+    case 'rentals': inner = vRentals(r.q); break;
+    case 'bikes': inner = vBikes(r.q); break;
+    case 'sell': inner = vSell(r.arg); if (inner === null) { const f = FLASH; location.hash = '#/bikes'; FLASH = f; return; } break;
+    case 'customers': inner = vCustomers(r.q); break;
+    case 'customer': inner = vCustomer(r.arg); if (inner === null) { const f = FLASH; location.hash = '#/customers'; FLASH = f; return; } break;
+    case 'maint': inner = vMaint(); break;
+    case 'finance': inner = vFinance(r.q); break;
+    case 'settings': inner = vSettings(); break;
+    case 'more': inner = vMore(); break;
+    default: inner = vDashboard();
+  }
+  app.innerHTML = shell(inner, r.name); FLASH = null; window.scrollTo(0, 0);
+  if (r.name === 'rent') bindRent(); if (r.name === 'end') bindEnd(); if (r.name === 'maint') addPartRow();
+  if (r.name === 'bikes') bindBike();
+  if (r.name === 'customer') PEND = {mode: 'keep', data: null};
+  const pf = $('#pf'); if (pf) pf.onchange = async () => { const f = pf.files[0]; if (!f) return; try { const d = await readPhoto(f); PEND = {mode: 'set', data: d}; $('#pprev').innerHTML = '<img class="avatar lg" src="' + d + '" alt="">'; } catch (e) { alert('تعذر قراءة الصورة'); } };
+  const rf = $('#rf'); if (rf) rf.onchange = () => { if (rf.files[0]) restoreBackup(rf.files[0]); };
+  const ib = $('#installbox'); if (ib && window.__installEvt) ib.innerHTML = '<br><button class="btn sec" data-act="install">تثبيت التطبيق الآن</button>';
+  tick();
+}
+
+/* ====================== العداد الحي ====================== */
+function shortDur(sec) { sec = Math.floor(sec); const d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60); return d ? d + ' يوم ' + h + ' س' : h ? h + ' س ' + m + ' د' : m + ' د'; }
+function tick() {
+  const now = Date.now();
+  document.querySelectorAll('.rt').forEach(el => {
+    const r = rentalOf(+el.dataset.id); if (!r || r.status !== 'active') return;
+    el.querySelector('.clock').textContent = dur((now - r.start) / 1000); el.querySelector('.live-amt').textContent = fmt(calcRental(r, now).total);
+    const rem = el.querySelector('.rem');
+    if (r.planned_end) { const left = (r.planned_end - now) / 1000; if (left >= 0) { rem.textContent = 'متبقي ' + shortDur(left); el.classList.remove('late'); } else { rem.textContent = 'متأخر ' + shortDur(-left); el.classList.add('late'); } }
+    else rem.textContent = 'مدة مفتوحة';
+  });
+}
+setInterval(tick, 1000);
+
+/* ====================== الأحداث ====================== */
+const FORMS = {
+  rent: f => startRental(f),
+  end: (f, el) => finishRental(+el.dataset.id, f),
+  paydebt: (f, el) => payDebt(+el.dataset.id, f.amount),
+  custpay: (f, el) => payCustomerDebt(+el.dataset.id, f.amount),
+  filter: (f, el) => { const p = new URLSearchParams(); Object.entries(f).forEach(([k, v]) => { if (v) p.set(k, v); }); go(el.dataset.page + (p.toString() ? '?' + p : '')); },
+  bike: f => saveBike(f),
+  sell: (f, el) => sellBike(+el.dataset.id, f),
+  maint: (f, el) => saveMaint(f, el),
+  addpart: (f, el) => addPart(+el.dataset.id, f),
+  customer: f => {
+    const name = (f.name || '').trim(); if (!name) return fail('أدخل اسم العميل');
+    const v = {name, phone: (f.phone || '').trim(), address: (f.address || '').trim(), guarantor: (f.guarantor || '').trim(), guarantor_phone: (f.guarantor_phone || '').trim(), notes: (f.notes || '').trim()};
+    let id = +f.id; if (id) Object.assign(custOf(id), v); else { id = nid('cust'); DB.customers.push({id, ...v, created: Date.now()}); }
+    applyPhoto(id); logAct(+f.id ? 'تعديل عميل' : 'إضافة عميل', name); save(); flash('ok', 'تم حفظ بيانات العميل'); go('customers');
+  },
+  expense: f => { const a = numIn(f.amount), cat = (f.cat || '').trim(); if (!cat || a <= 0) return fail('أدخل نوع المصروف والمبلغ'); if (!needAdmin()) return; cashAdd('expense', a, 0, cat, (f.note || '').trim(), dateToTs(f.date)); logAct('تسجيل مصروف', cat + ' — ' + fmt(a)); save(); flash('ok', 'تم تسجيل المصروف'); render(); },
+  owner: f => { const a = numIn(f.amount); if (a <= 0) return fail('أدخل مبلغاً صحيحاً'); if (!needAdmin()) return; cashAdd(f.kind === 'owner_out' ? 'owner_out' : 'owner_in', a, 0, '', (f.note || '').trim()); logAct(f.kind === 'owner_out' ? 'سحب المالك' : 'إيداع المالك', fmt(a)); save(); flash('ok', 'تم التسجيل'); render(); },
+  settings: f => {
+    if (!needAdmin()) return;
+    const s = DB.settings; s.contract_terms = (f.contract_terms || '').trim() || TERMS; s.shop_name = (f.shop_name || '').trim() || DEF.shop_name; s.shop_phone = (f.shop_phone || '').trim(); s.footer = (f.footer || '').trim();
+    s.default_rate = numIn(f.default_rate) || 300; s.opening_cash = numIn(f.opening_cash); s.grace = Math.max(0, numIn(f.grace)); s.late_pct = Math.max(0, numIn(f.late_pct));
+    s.round_to = Math.max(1, numIn(f.round_to) || 1); s.early_mode = f.early_mode === 'agreed' ? 'agreed' : 'actual'; s.auto_delete = !!f.auto_delete;
+    logAct('تعديل الإعدادات', ''); save(); flash('ok', 'تم حفظ الإعدادات'); go('settings');
+  },
+  sync: f => {
+    if (!needAdmin()) return;
+    const u = (f.sync_url || '').trim();
+    if (u && !/^https:\/\//i.test(u) && !/^http:\/\/(localhost|127\.0\.0\.1)/i.test(u)) return fail('الرابط يجب أن يبدأ بـ https://');
+    DB.settings.sync_url = u; DB.settings.sync_key = (f.sync_key || '').trim(); DB.settings.sync_auto = !!f.sync_auto; DB.settings.sync_err = ''; nextTry = 0;
+    logAct('ضبط النسخ على الاستضافة', u); save(); flash('ok', 'تم حفظ الإعداد' + (u && DB.settings.sync_key ? ' — جرّب "اختبار الاتصال"' : '')); render(); setTimeout(autoSync, 800);
+  },
+  type: f => saveType(f),
+  user: f => saveUser(f),
+  block: (f, el) => { const c = custOf(+el.dataset.id); if (!c) return; c.blocked = 1; c.block_reason = (f.reason || '').trim(); logAct('حظر عميل', c.name + (c.block_reason ? ' — ' + c.block_reason : '')); save(); flash('ok', 'تم حظر العميل'); render(); },
+  unlock: async f => {
+    if (Date.now() < lockUntil) return alert('محاولات كثيرة خاطئة، انتظر نصف دقيقة.');
+    const u = DB.users.find(x => x.id === +f.uid && x.active);
+    if (u && (await hashPin(String(f.pin || '').trim(), u)) === u.pin) { fails = 0; ssSet('uid', u.id); logAct('تسجيل دخول', ''); save(); render(); }
+    else { if (++fails >= 5) { fails = 0; lockUntil = Date.now() + 30000; } alert('الاسم أو الرقم السري غير صحيح'); }
+  },
+};
+document.addEventListener('submit', e => { const f = e.target.closest('form[data-form]'); if (!f) return; e.preventDefault(); FORMS[f.dataset.form](Object.fromEntries(new FormData(f)), f); });
+
+const ACTS = {
+  print: () => window.print(),
+  sharetext: async el => { const t = receiptText(rentalOf(+el.dataset.id)); if (navigator.share) { try { await navigator.share({text: t}); } catch (e) {} } else { try { await navigator.clipboard.writeText(t); alert('تم نسخ نص الإيصال'); } catch (e) { alert(t); } } },
+  cancel: el => { if (confirm('إلغاء هذا الإيجار نهائياً؟')) cancelRental(+el.dataset.id); },
+  delbike: el => deleteBike(+el.dataset.id),
+  undosale: el => { if (confirm('إلغاء بيع الدراجة وسحب المبلغ من الصندوق؟')) undoSale(+el.dataset.id); },
+  delcust: el => { if (!needAdmin()) return; const id = +el.dataset.id; if (DB.rentals.some(r => r.customer_id === id && (r.status === 'active' || balance(r) > 0))) return fail('لا يمكن حذف عميل عنده إيجار جارٍ أو مبلغ متبقٍ عليه'); if (!confirm('حذف العميل؟')) return; logAct('حذف عميل', (custOf(id) || {}).name); DB.customers = DB.customers.filter(c => c.id !== id); delete PHOTOS[id]; savePhotos(); save(); flash('ok', 'تم حذف العميل'); go('customers'); },
+  rmphoto: () => { PEND = {mode: 'remove', data: null}; $('#pprev').innerHTML = '<span class="avatar lg">؟</span>'; },
+  purge: () => { if (!needAdmin()) return; if (confirm('سيتم حذف كل عميل أكمل إيجاره ولا عليه متبقٍ. هل نزّلت نسخة احتياطية؟ متابعة؟')) { purgeCustomers(); render(); } },
+  addrow: () => addPartRow(),
+  shareinv: async el => { const m = DB.maint.find(x => x.id === +el.dataset.id); if (!m) return; const t = invoiceText(m); if (navigator.share) { try { await navigator.share({text: t}); } catch (e) {} } else { try { await navigator.clipboard.writeText(t); alert('تم نسخ نص الفاتورة'); } catch (e) { alert(t); } } },
+  syncnow: () => syncPush(true),
+  syncpull: () => syncPull(),
+  syncping: () => syncPing(),
+  logout: () => { logAct('تسجيل خروج', ''); save(); ssSet('uid', null); location.hash = '#/dashboard'; render(); },
+  unblock: el => { if (!needAdmin()) return; const c = custOf(+el.dataset.id); if (!c) return; c.blocked = 0; c.block_reason = ''; logAct('رفع حظر عميل', c.name); save(); flash('ok', 'تم رفع الحظر'); render(); },
+  typedel: el => deleteType(+el.dataset.id),
+  userpin: async el => {
+    if (!needAdmin()) return; const u = DB.users.find(x => x.id === +el.dataset.id); if (!u) return;
+    const p = prompt('الرقم السري الجديد لـ ' + u.name + ' (4 أرقام فأكثر)'); if (p === null) return;
+    if (p.trim().length < 4) return alert('الرقم السري 4 أرقام على الأقل');
+    u.legacy = false; u.pin = await hashPin(p.trim(), u); logAct('تغيير رقم سري', u.name); save(); flash('ok', 'تم تغيير الرقم السري'); render();
+  },
+  usertoggle: el => { if (!needAdmin()) return; const u = DB.users.find(x => x.id === +el.dataset.id); if (!u || lastAdminGuard(u)) return; u.active = !u.active; logAct(u.active ? 'تفعيل مستخدم' : 'إيقاف مستخدم', u.name); save(); flash('ok', 'تم التحديث'); render(); },
+  userrole: el => { if (!needAdmin()) return; const u = DB.users.find(x => x.id === +el.dataset.id); if (!u) return; if (u.role === 'admin' && lastAdminGuard(u)) return; u.role = u.role === 'admin' ? 'staff' : 'admin'; logAct('تغيير صلاحية', u.name + ' → ' + (u.role === 'admin' ? 'مدير' : 'موظف')); save(); flash('ok', 'تم التحديث'); render(); },
+  userdel: el => { if (!needAdmin()) return; const u = DB.users.find(x => x.id === +el.dataset.id); if (!u || lastAdminGuard(u) || !confirm('حذف المستخدم ' + u.name + '؟')) return; const self = curUser() && curUser().id === u.id; logAct('حذف مستخدم', u.name); DB.users = DB.users.filter(x => x.id !== u.id); save(); if (self) ssSet('uid', null); flash('ok', 'تم حذف المستخدم'); render(); },
+  mdone: el => completeMaint(+el.dataset.id),
+  mdel: el => deleteMaint(+el.dataset.id),
+  delcash: el => { if (!needAdmin() || !confirm('حذف هذه الحركة؟')) return; logAct('حذف حركة صندوق', '#' + el.dataset.id); DB.cash = DB.cash.filter(e => e.id !== +el.dataset.id); save(); render(); },
+  csvled: () => dlCsv('cash_ledger.csv', [['date', 'type', 'amount', 'category', 'note', 'ref']].concat(DB.cash.map(e => [dtf(e.at), CASH[e.type][0], e.amount, e.cat, e.note, e.ref]))),
+  csvrent: el => { const from = el.dataset.from, to = el.dataset.to, rows = [['id', 'bike', 'customer', 'plan', 'price', 'start', 'arrival', 'delay_min', 'delay_cost', 'total', 'discount', 'paid', 'balance']];
+    DB.rentals.filter(r => r.status === 'finished' && r.arrival && dayKey(r.arrival) >= from && dayKey(r.arrival) <= to).forEach(r => rows.push([r.id, bikeLabel(bikeOf(r.bike_id)), cname(r), planLabel(r), r.price, dtf(r.start), dtf(r.arrival), r.delay_min, r.delay_cost, r.total, r.discount, r.paid, balance(r)])); dlCsv('rentals_' + from + '_' + to + '.csv', rows); },
+  dl: () => downloadBackup(),
+  share: () => shareBackup(),
+  install: async () => { const e = window.__installEvt; if (e) { e.prompt(); await e.userChoice; window.__installEvt = null; render(); } },
+  wipe: async () => { if (!needAdmin()) return; if (prompt('اكتب كلمة "حذف" لتأكيد مسح كل البيانات نهائياً') === 'حذف') { DB = emptyDB(); PHOTOS = {}; ssSet('uid', null); await savePhotos(); save(); flash('ok', 'تم مسح كل البيانات'); go('dashboard'); } },
+};
+function dlCsv(name, rows) {
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"', blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\n')], {type: 'text/csv;charset=utf-8'}), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+}
+document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (el && ACTS[el.dataset.act]) { e.preventDefault(); ACTS[el.dataset.act](el); } });
+
+window.addEventListener('hashchange', render);
+window.addEventListener('online', render); window.addEventListener('offline', render);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__installEvt = e; });
+if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+/* ====================== الإقلاع ====================== */
+(async function boot() {
+  await store.init();
+  let raw = await store.get('db'), d = null;
+  if (raw) { try { d = JSON.parse(raw); } catch (e) { d = null; } }
+  if (!d) { const p = await store.get('db_prev'); if (p) { try { d = JSON.parse(p); } catch (e) {} } }
+  if (!d) { try { const old = localStorage.getItem('bike_rental_v1'); if (old) d = JSON.parse(old); } catch (e) {} }   // ترحيل من النسخة الأولى
+  DB = d ? normalize(d) : emptyDB(); LAST = JSON.stringify(DB);
+  PHOTOS = (await store.get('photos')) || {}; SYNCMETA = (await store.get('syncmeta')) || {}; unsynced = !DB.settings.last_sync; setTimeout(autoSync, 5000);
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+  READY = true; render();
+})();
+</script>
+</body>
+</html>
